@@ -70,7 +70,7 @@
 		<repository>
 			<id>bintray-giskard80-InglouriousBasterds</id>
 			<name>giskard80-InglouriousBasterds</name>
-			<url>https://api.bintray.com/maven/${env.BINTRAY_REPO_OWNER}/${env.BINTRAY_REPO}/SpringOverExtend/;publish=1</url>
+			<url>https://api.bintray.com/maven/${env.BINTRAY_REPO_OWNER}/${env.BINTRAY_REPO}/${project.artifactId}/;publish=1</url>
 		</repository>
 	</distributionManagement>
 
