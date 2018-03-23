@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:over="http://www.inglourious.com"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd" >
+
+	<bean id="BeanA" class="com.inglourious.overextension.bean.BeanChildrenMock" over:extension="abstract"  >
+		    	<property name="a" value="A figlio"/>
+				<property name="c" value="C figlio"/>
+    </bean>        
+            
+    <bean id="BeanTestMappa" class="com.inglourious.overextension.bean.BeanProductMock" over:extension="abstract">
+		<property name="mappa" >
+	      	<map merge="true">
+	      		<entry key="key2">
+	      			<value>valoreFiglio</value>
+	      		</entry>
+	      	</map>
+      </property>
+	</bean>
+      
+    <!-- insert other configuration and dependencies as required as here -->
+<!-- 	<bean id="owfs.has.ptf.DB" class="java.lang.Boolean" ow:extension="true" > -->
+<!--         <constructor-arg value="false" /> -->
+<!--     </bean> -->
+
+<bean id="BeanC" over:extension="abstract" class="com.inglourious.overextension.bean.BeanWithReferenceMockExtParentMock"  >
+		<property name="a" value="prop A BeanC"/>
+		<property name="b" value="prop B BeanC"/>
+		<property name="mockParent" ref="BeanC_Child" />
+	</bean>
+	
+	<bean id="BeanD" class="com.inglourious.overextension.bean.BeanProductMock" over:extension="abstract" >
+		<property name="b" value="B figlio"/>
+	</bean>
+	
+</beans>           

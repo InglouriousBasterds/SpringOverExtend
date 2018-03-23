@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.springframework.org/schema/beans 
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd"
+           >
+	
+	
+	<!--
+		Spring Bean di prodotto con il suo comportamento base.
+		-->
+	<bean id="BeanA" class="com.inglourious.overextension.bean.BeanProductMock"  >
+		<property name="a" value="A padre"/>
+		<property name="b" value="B padre"/>
+	</bean>
+	
+	<bean id="BeanB" class="com.inglourious.overextension.bean.BeanProductMock"  >
+		<property name="a" value="A padre"/>
+		<property name="b" value="B padre"/>
+	</bean>
+
+
+
+
+	<bean id="BeanC_Father" class="com.inglourious.overextension.bean.BeanParentMock"  >
+		<property name="uno" value="11"/>
+		<property name="due" value="22"/>
+	</bean>
+	
+	<bean id="BeanC" class="com.inglourious.overextension.bean.BeanWithReferenceMockExtParentMock" parent="BeanC_Father" >
+		<property name="a" value="prop A BeanC"/>
+		<property name="b" value="prop B BeanC"/>
+		<property name="mockParent" ref="BeanC_Child" />
+	</bean>
+
+	<bean id="BeanC_Child" class="com.inglourious.overextension.bean.BeanParentMock" >
+		<property name="a" value="prop A BeanC_Child"/>
+		<property name="b" value="prop B BeanC_Child"/>
+		<property name="mock" ref="BeanA" />
+	</bean>
+
+	<bean id="BeanTestMappa" class="com.inglourious.overextension.bean.BeanProductMock" >
+		<property name="mappa" >
+	      	<map>
+	      		<entry key="key">
+	      			<value>valoreProdotto</value>
+	      		</entry>
+	      	</map>
+      </property>
+	</bean>
+	
+	
+	<bean id="BeanD" class="com.inglourious.overextension.bean.BeanProductMock"  >
+		<property name="a" value="A padre"/>
+		<property name="b" value="B padre"/>
+		<property name="c" value="C padre"/>
+	</bean>
+
+
+</beans>

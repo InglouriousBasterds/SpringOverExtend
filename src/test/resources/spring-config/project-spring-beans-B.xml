@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:over="http://www.inglourious.com"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd" >
+
+	<bean id="BeanB" class="com.inglourious.overextension.bean.BeanChildrenMock" over:extension="abstract" >
+		    	<property name="a" value="A figlio"/>
+				<property name="c" value="C figlio"/>
+    </bean>      
+
+		   
+    <bean id="BeanCProgetto" class="com.inglourious.overextension.bean.BeanWithReferenceMock" >
+			<property name="mock" ref="BeanB" />
+    </bean> 
+	
+    <bean id="BeanD" class="com.inglourious.overextension.bean.BeanProductMock" over:extension="abstract" >
+		<property name="c" value="C nipote"/>
+	</bean>
+	 
+    <!-- insert other configuration and dependencies as required as here -->
+    
+
+</beans>           
