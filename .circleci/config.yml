@@ -38,4 +38,4 @@ jobs:
           key: SpringOverExtend-{{ checksum "pom.xml" }}
 
       # run tests!
-      - run: mvn clean install
+      - run: mvn clean install deploy
