@@ -38,4 +38,4 @@ jobs:
           key: SpringOverExtend-{{ checksum "pom.xml" }}
 
       # run tests!
-      - run: mvn -s .circleci.settings.xml clean install deploy
+      - run: mvn -s ./.circleci/.circleci.settings.xml clean install deploy
