@@ -19,7 +19,7 @@ Main spring beans file (file master) in a context of a dependency library:
 Project spring file (file slave) in a project that wants to override some method of the parent without change the parent bean id but inhetiing his properties and functions
 <code>
 
-    <bean id="BeanA" class="com.inglourious.overextension.bean.BeanChildrenMock" ow:extension="true" >
+    <bean id="BeanA" class="com.inglourious.overextension.bean.BeanChildrenMock" over:extension="abstract" >
        <property name="a" value="A figlio"/>
        <property name="c" value="C figlio"/>
     </bean>

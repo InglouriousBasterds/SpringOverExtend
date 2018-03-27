@@ -1,27 +1,25 @@
 package com.inglourious.overextension;
 
 import com.inglourious.overextension.annotation.OverExtension;
+import com.inglourious.overextension.bean.ReplacerKeyRegistry;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
-
-import org.springframework.beans.MutablePropertyValues;
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
-import org.springframework.beans.factory.xml.ParserContext;
+import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.context.annotation.ScannedGenericBeanDefinition;
-import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import static com.inglourious.overextension.ExtensionBeanDefinitionDecorator.SUFFIX_BEAN_EXTENDED;
 
@@ -35,112 +33,109 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanDefinit
     protected final Log logger = LogFactory.getLog(ExtensionBeanDefinitionRegistryPostProcessor.class);
 
     @Override
-    public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException{
+    public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
 
 
-        if ( registry instanceof ConfigurableListableBeanFactory) {
-            ListableBeanFactory configurableListableBeanFactory = (ConfigurableListableBeanFactory)registry;
-
-
-          /* Map<String, Object> beansWithAnnotation = configurableListableBeanFactory.getBeansWithAnnotation(OverExtension.class);
-            for (Map.Entry<String, Object> entry : beansWithAnnotation.entrySet()){
-                System.out.println(entry.getKey() + "/" + entry.getValue());
-            }*/
-
-            Set<String> alreadyReplaced = new HashSet<String>();
+        if (registry instanceof ConfigurableListableBeanFactory) {
+            List<ReplacerKeyRegistry> addInMapRegistry = new ArrayList<ReplacerKeyRegistry>();
+            ListableBeanFactory configurableListableBeanFactory = (ConfigurableListableBeanFactory) registry;
             String[] beanDefinitionNames = configurableListableBeanFactory.getBeanDefinitionNames();
+
             for (String beanDefinitionName : beanDefinitionNames) {
 
                 OverExtension annotationOnBean = configurableListableBeanFactory.findAnnotationOnBean(beanDefinitionName, OverExtension.class);
-                if (annotationOnBean!=null && !alreadyReplaced.contains(beanDefinitionName)) {
 
-
-                    String beanNameOfChildren = beanDefinitionName;
-                    System.out.println("------------------------------------>"+beanNameOfChildren);
-                    ScannedGenericBeanDefinition beanChildrenResult = (ScannedGenericBeanDefinition) ((ConfigurableListableBeanFactory) registry).getBeanDefinition(beanNameOfChildren);
-
-
-                    String superClassName = beanChildrenResult.getMetadata().getSuperClassName();
-
-                    System.out.println("------------------------------------>"+ superClassName );
-
-
-                    try {
-                        String[] beanNamesForType = ((ConfigurableListableBeanFactory) registry).getBeanNamesForType(Class.forName(superClassName));
-
-
-
-
-                        for (String beanNameOfParent : beanNamesForType) {
-                            System.out.println("------------------------------------> TROVATO PADRE N OME "+ beanNameOfParent );
-                            System.out.println("------------------------------------>             "+registry.getBeanDefinition(beanNameOfParent).getBeanClassName() );
-                            ScannedGenericBeanDefinition beanParentDefinition = (ScannedGenericBeanDefinition) registry.getBeanDefinition(beanNameOfParent);
-                            if (beanParentDefinition.getBeanClassName().equalsIgnoreCase(superClassName)) {
-                                System.out.println("------------------------------------>     TROVATEO E  mi fermo beanNameOfParent        "+registry.getBeanDefinition(beanNameOfParent).getBeanClassName() );
-
-                                // rimuoviamo il bean originale dal registry
-                                registry.removeBeanDefinition(beanNameOfParent);
-
-                                //Rendiamo abstract il parent
-                                beanParentDefinition.setAbstract(true);
-
-
-                                // rinominiamo il bean originale secondo la convenzione definita e lo salviamo nel registry
-                                String newParentName = buildParentName(beanNameOfParent);
-                                registry.registerBeanDefinition(newParentName, beanParentDefinition);
-
-
-
-                                // rimuoviamo il bean originale dal registry
-                                registry.removeBeanDefinition(beanNameOfChildren);
-
-                                //Rendiamo abstract il parent
-                                beanChildrenResult.setParentName(newParentName);
-
-                                registry.registerBeanDefinition(beanNameOfParent, beanChildrenResult);
-
-
-                                alreadyReplaced.add(beanNameOfParent);
-
-
-
-
-
-                                break;
-                            }
-
-
-
-
+                try {
+                    if (annotationOnBean != null) {
+                        String beanNameOfChildren = beanDefinitionName;
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Find " + beanNameOfChildren + " candidate for OverExtension");
                         }
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
+
+                        ScannedGenericBeanDefinition beanChildrenResult = (ScannedGenericBeanDefinition) ((ConfigurableListableBeanFactory) registry).getBeanDefinition(beanNameOfChildren);
+                        String superClassName = beanChildrenResult.getMetadata().getSuperClassName();
+                        Map<String, Object> annotationAttributes = beanChildrenResult.getMetadata().getAnnotationAttributes(OverExtension.class.getName(), true);
+                        if (superClassName == null
+                                || "".equalsIgnoreCase(superClassName)) {
+                            throw new BeanCreationException("Bean " + beanNameOfChildren + " annotated with OverExtension must extend a superclass");
+                        }
+
+                        String[] beanNamesForType;
+                        Object extendBeanId = annotationAttributes.get("extendBeanId");
+                        if (extendBeanId != null
+                                && !"".equalsIgnoreCase(extendBeanId.toString())) {
+                            beanNamesForType = new String[]{extendBeanId.toString()};
+                        } else {
+                            beanNamesForType = ((ConfigurableListableBeanFactory) registry).getBeanNamesForType(Class.forName(superClassName));
+                        }
+
+                        if (beanNamesForType == null) {
+                            throw new BeanCreationException("Bean " + beanNameOfChildren + " must extends a spring bean component or specify extendBeanId , doesn't exist a spring bean for the class " + superClassName + " ");
+                        }
+
+                        //The bean name for the parent to extend
+                        String beanNameOfParent = null;
+                        BeanDefinition beanParentDefinition = null;
+
+                        if (beanNamesForType.length > 1) {
+                            for (String beanNameForType : beanNamesForType) {
+                                beanParentDefinition = (BeanDefinition) registry.getBeanDefinition(beanNameForType);
+                                if (beanParentDefinition.getBeanClassName().equalsIgnoreCase(superClassName)) {
+                                    beanNameOfParent = beanNameForType;
+                                    break;
+                                }
+                            }
+                        } else {
+                            beanParentDefinition = (BeanDefinition) registry.getBeanDefinition(beanNamesForType[0]);
+                            if (beanParentDefinition.getBeanClassName().equalsIgnoreCase(superClassName)) {
+                                beanNameOfParent = beanNamesForType[0];
+                            }
+                        }
+
+
+                        if (beanNameOfParent == null
+                                || beanNameOfParent.equalsIgnoreCase("")
+                                    || beanParentDefinition == null) {
+                            throw new BeanCreationException("Bean " + beanNameOfChildren + " must extends a unique spring bean component or specify extendBeanId ,empty or too much spring bean for the class " + superClassName + " (" + beanNamesForType.toString() + ")");
+                        }
+
+                        addInMapRegistry.add(new ReplacerKeyRegistry( beanNameOfChildren, beanChildrenResult, beanNameOfParent, beanParentDefinition));
                     }
+                } catch (ClassNotFoundException e) {
+                    logger.error("",e );
+                } catch (BeanCreationException be) {
+                    logger.error("Bean Creation error on OverExtension", be );
+                }
+            }
 
 
+            if(addInMapRegistry.size() > 0) {
+                for (ReplacerKeyRegistry replacerKeyRegistry : addInMapRegistry) {
+                    remappingRegistry(registry, replacerKeyRegistry.getBeanNameOfChildren(), replacerKeyRegistry.getBeanChildrenResult(), replacerKeyRegistry.getBeanNameOfParent(), replacerKeyRegistry.getBeanParentDefinition());
                 }
             }
         }
-
-
-
-//        var1.removeBeanDefinition("beanProductAnnotedMock");
-
-        System.out.println("paperino");
-        System.out.println("paperino");
-        System.out.println("paperino");
-        System.out.println("paperino");
-        System.out.println("paperino");
-        System.out.println("paperino");
-
     }
 
+    private void remappingRegistry(BeanDefinitionRegistry registry, String beanNameOfChildren, ScannedGenericBeanDefinition beanChildrenResult, String beanNameOfParent, BeanDefinition beanParentDefinition) {
+        // rimuoviamo il bean originale dal registry
+        registry.removeBeanDefinition(beanNameOfParent);
 
+        //Rendiamo abstract il parent
+        ((AbstractBeanDefinition)beanParentDefinition).setAbstract(true);
 
+        // rinominiamo il bean originale secondo la convenzione definita e lo salviamo nel registry
+        String newParentName = buildParentName(beanNameOfParent);
+        registry.registerBeanDefinition(newParentName, beanParentDefinition);
 
+        // rimuoviamo il bean originale dal registry
+        registry.removeBeanDefinition(beanNameOfChildren);
 
+        //Rendiamo abstract il parent
+        beanChildrenResult.setParentName(newParentName);
 
-
+        registry.registerBeanDefinition(beanNameOfParent, beanChildrenResult);
+    }
 
 
     public String buildParentName(String parentName) {
@@ -148,20 +143,6 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanDefinit
     }
 
 
-
-
-
-
-
-
-
-
-
     @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
-
-
-
-
-    }
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {;}
 }

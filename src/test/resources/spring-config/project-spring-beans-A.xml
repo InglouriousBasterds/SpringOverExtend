@@ -21,11 +21,6 @@
 	      	</map>
       </property>
 	</bean>
-      
-    <!-- insert other configuration and dependencies as required as here -->
-<!-- 	<bean id="owfs.has.ptf.DB" class="java.lang.Boolean" ow:extension="true" > -->
-<!--         <constructor-arg value="false" /> -->
-<!--     </bean> -->
 
 <bean id="BeanC" over:extension="abstract" class="com.inglourious.overextension.bean.BeanWithReferenceMockExtParentMock"  >
 		<property name="a" value="prop A BeanC"/>

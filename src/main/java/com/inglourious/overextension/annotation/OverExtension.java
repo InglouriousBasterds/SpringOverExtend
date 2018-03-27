@@ -1,5 +1,6 @@
 package com.inglourious.overextension.annotation;
 
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.lang.annotation.ElementType;
@@ -13,10 +14,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Component
-//@ComponentScan(nameGenerator = ExtensionAnnotationBeanNameGenerator.class)
+@Order(100)
 public @interface OverExtension {
 
-    String value() default "";
+    String extendBeanId() default "";
 
     String extension() default "abstract";
 
