@@ -4,16 +4,18 @@ import com.inglourious.overextension.bean.AbstractMainConfigurationTestBean;
 import com.inglourious.overextension.beanWithAnnotation.FinalVariable;
 import com.inglourious.overextension.beanWithAnnotation.InjectOfMainConfigurationTestBean;
 import com.inglourious.overextension.beanWithAnnotation.MainConfigurationTestBean;
+import com.inglourious.overextension.config.SpringOverextendConfiguration;
 import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@ContextConfiguration(classes = {SpringOverextendConfiguration.class})
 public class SpringOverextendAnnotationApplicationTests extends TestCase {
 
     @Autowired

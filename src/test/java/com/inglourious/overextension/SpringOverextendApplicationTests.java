@@ -8,7 +8,6 @@ import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -17,7 +16,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
 @ContextConfiguration(locations = {"classpath:spring-config/main-spring-beans.xml",
         "classpath:spring-config/project-spring-beans-A.xml",
         "classpath:spring-config/project-spring-beans-B.xml",
