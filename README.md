@@ -159,7 +159,7 @@ For example we can override a spring bean that has id = "org.springframework.con
         public void setBeanFactory(BeanFactory beanFactory) {
             super.setBeanFactory(beanFactory);
     
-            //CODE OR DEFINE WAHT YOU NEED
+            //CODE OR DEFINE WHAT YOU NEED
             
             
         }
