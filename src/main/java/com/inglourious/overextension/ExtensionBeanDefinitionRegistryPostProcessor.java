@@ -56,17 +56,19 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanDefinit
                         String superClassName = beanChildrenResult.getMetadata().getSuperClassName();
                         Map<String, Object> annotationAttributes = beanChildrenResult.getMetadata().getAnnotationAttributes(OverExtension.class.getName(), true);
                         if (superClassName == null
-                                || "".equalsIgnoreCase(superClassName)) {
+                                || "".equalsIgnoreCase(superClassName)
+                                    || Object.class.getCanonicalName().equalsIgnoreCase(superClassName)) {
                             throw new BeanCreationException("Bean " + beanNameOfChildren + " annotated with OverExtension must extend a superclass");
                         }
 
                         String[] beanNamesForType;
+                        Class<?> classForSuperClass = Class.forName(superClassName);
                         Object extendBeanId = annotationAttributes.get("extendBeanId");
                         if (extendBeanId != null
                                 && !"".equalsIgnoreCase(extendBeanId.toString())) {
                             beanNamesForType = new String[]{extendBeanId.toString()};
                         } else {
-                            beanNamesForType = ((ConfigurableListableBeanFactory) registry).getBeanNamesForType(Class.forName(superClassName));
+                            beanNamesForType = ((ConfigurableListableBeanFactory) registry).getBeanNamesForType(classForSuperClass);
                         }
 
                         if (beanNamesForType == null) {
@@ -76,27 +78,45 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanDefinit
                         //The bean name for the parent to extend
                         String beanNameOfParent = null;
                         BeanDefinition beanParentDefinition = null;
+                        boolean isValidSuperClass = true;
+
 
                         if (beanNamesForType.length > 1) {
                             for (String beanNameForType : beanNamesForType) {
                                 beanParentDefinition = (BeanDefinition) registry.getBeanDefinition(beanNameForType);
                                 if (beanParentDefinition.getBeanClassName().equalsIgnoreCase(superClassName)) {
                                     beanNameOfParent = beanNameForType;
+                                    isValidSuperClass = true;
                                     break;
+                                } else if (beanNameForType.equalsIgnoreCase(beanNameOfChildren)) {
+                                    isValidSuperClass = false;
                                 }
                             }
                         } else {
                             beanParentDefinition = (BeanDefinition) registry.getBeanDefinition(beanNamesForType[0]);
-                            if (beanParentDefinition.getBeanClassName().equalsIgnoreCase(superClassName)) {
+
+                            Class classOfParent = Class.forName(beanParentDefinition.getBeanClassName());
+                            boolean isAssignable = classOfParent.isAssignableFrom(classForSuperClass);
+
+                            if (beanParentDefinition.getBeanClassName().equalsIgnoreCase(superClassName)
+                                    || isAssignable) {
                                 beanNameOfParent = beanNamesForType[0];
+                            }else if (beanNamesForType[0].equalsIgnoreCase(beanNameOfChildren)) {
+                                isValidSuperClass = false;
                             }
+
                         }
 
 
                         if (beanNameOfParent == null
                                 || beanNameOfParent.equalsIgnoreCase("")
                                     || beanParentDefinition == null) {
-                            throw new BeanCreationException("Bean " + beanNameOfChildren + " must extends a unique spring bean component or specify extendBeanId ,empty or too much spring bean for the class " + superClassName + " (" + beanNamesForType.toString() + ")");
+
+                            if (!isValidSuperClass) {
+                                throw new BeanCreationException("Bean " + beanNameOfChildren + " must extends a unique spring bean component  or specify extendBeanId. Invalid superClass " + superClassName + " (" + beanNamesForType.toString() + ")");
+                            } else {
+                                throw new BeanCreationException("Bean " + beanNameOfChildren + " must extends a unique spring bean component or specify extendBeanId ,empty or too much spring bean for the " + superClassName + " (" + beanNamesForType.toString() + ")");
+                            }
                         }
 
                         addInMapRegistry.add(new ReplacerKeyRegistry( beanNameOfChildren, beanChildrenResult, beanNameOfParent, beanParentDefinition));
