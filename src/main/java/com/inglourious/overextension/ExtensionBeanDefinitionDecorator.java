@@ -45,8 +45,7 @@ public class ExtensionBeanDefinitionDecorator implements BeanDefinitionDecorator
 
         AbstractBeanDefinition beanOrigin = (AbstractBeanDefinition) beanDefinitionRegistry.getBeanDefinition(beanName);
 
-        // rimuoviamo il bean originale dal registry
-        beanDefinitionRegistry.removeBeanDefinition(beanName);
+        removeBeanFromRegistry(beanName, beanDefinitionRegistry);
 
         //Rendiamo abstract il parent
         beanOrigin.setAbstract(true);
@@ -59,7 +58,7 @@ public class ExtensionBeanDefinitionDecorator implements BeanDefinitionDecorator
 
         // Se eventualmente è già stato settato il parent errore a runtime
         if (definition.getBeanDefinition().getParentName() != null && !definition.getBeanDefinition().getParentName().equalsIgnoreCase("")) {
-            throw new RuntimeException("The attribute parent it's not allowed for bean " + beanName);
+            throw new RuntimeException("The attribute parent is not allowed for the bean " + beanName);
         }
 
         logger.info("Bean with id : '" + beanName + "' extended in " + parserContext.getReaderContext().getResource().getFilename());
@@ -67,6 +66,10 @@ public class ExtensionBeanDefinitionDecorator implements BeanDefinitionDecorator
         // settiamo come parent il bean originale rinominato
         definition.getBeanDefinition().setParentName(newParentName);
 
+    }
+
+    private void removeBeanFromRegistry(String beanName, BeanDefinitionRegistry beanDefinitionRegistry) {
+        beanDefinitionRegistry.removeBeanDefinition(beanName);
     }
 
 
