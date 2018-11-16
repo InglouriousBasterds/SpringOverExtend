@@ -1,7 +1,6 @@
 package com.inglourious.overextension.bean;
 
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.support.GenericBeanDefinition;
 import org.springframework.context.annotation.ScannedGenericBeanDefinition;
 
 /**
@@ -9,31 +8,34 @@ import org.springframework.context.annotation.ScannedGenericBeanDefinition;
  */
 public class ReplacerKeyRegistry {
 
-    String beanNameOfChildren;
-    ScannedGenericBeanDefinition beanChildrenResult;
-    String beanNameOfParent;
-    BeanDefinition beanParentDefinition;
+    private final String childBeanName;
+    private final ScannedGenericBeanDefinition childBeanResult;
+    private final String parentBeanName;
+    private final BeanDefinition parentBeanDefinition;
 
-    public ReplacerKeyRegistry(String beanNameOfChildren, ScannedGenericBeanDefinition beanChildrenResult, String beanNameOfParent, BeanDefinition beanParentDefinition) {
-        this.beanNameOfChildren = beanNameOfChildren;
-        this.beanChildrenResult = beanChildrenResult;
-        this.beanNameOfParent = beanNameOfParent;
-        this.beanParentDefinition = beanParentDefinition;
+    public ReplacerKeyRegistry(String childBeanName,
+                               ScannedGenericBeanDefinition beanChildrenResult,
+                               String parentBeanName,
+                               BeanDefinition parentBeanDefinition) {
+        this.childBeanName = childBeanName;
+        this.childBeanResult = beanChildrenResult;
+        this.parentBeanName = parentBeanName;
+        this.parentBeanDefinition = parentBeanDefinition;
     }
 
     public String getBeanNameOfChildren() {
-        return beanNameOfChildren;
+        return childBeanName;
     }
 
     public ScannedGenericBeanDefinition getBeanChildrenResult() {
-        return beanChildrenResult;
+        return childBeanResult;
     }
 
     public String getBeanNameOfParent() {
-        return beanNameOfParent;
+        return parentBeanName;
     }
 
     public BeanDefinition getBeanParentDefinition() {
-        return beanParentDefinition;
+        return parentBeanDefinition;
     }
 }
