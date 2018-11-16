@@ -72,7 +72,7 @@ public class ExtensionBeanDefinitionDecorator implements BeanDefinitionDecorator
 	}
 
 
-	public String buildParentName(BeanDefinitionHolder definitionChild, AbstractBeanDefinition beanFather) {
+	private String buildParentName(BeanDefinitionHolder definitionChild, AbstractBeanDefinition beanFather) {
 		 
 		String parentName = beanFather.getParentName();
 		if((parentName == null) || (parentName.equalsIgnoreCase("")))
