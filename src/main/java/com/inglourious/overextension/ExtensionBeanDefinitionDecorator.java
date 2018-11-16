@@ -80,10 +80,10 @@ public class ExtensionBeanDefinitionDecorator implements BeanDefinitionDecorator
 
         String parentName = beanFather.getParentName();
 
-        if (isEmpty(parentName))
-            return definitionChild.getBeanName() + SUFFIX_BEAN_EXTENDED;
-        else
-            return parentName + "_" + definitionChild.getBeanName() + SUFFIX_BEAN_EXTENDED;
+        String childBeanName = definitionChild.getBeanName();
+
+        return isEmpty(parentName) ? childBeanName + SUFFIX_BEAN_EXTENDED :
+                parentName + "_" + childBeanName + SUFFIX_BEAN_EXTENDED;
 
     }
 }
