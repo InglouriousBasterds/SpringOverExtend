@@ -4,9 +4,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.xml.BeanDefinitionDecorator;
 import org.springframework.beans.factory.xml.ParserContext;
-import org.springframework.core.io.DefaultResourceLoader;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 
@@ -21,18 +21,9 @@ public class ExtensionBeanDefinitionDecorator implements BeanDefinitionDecorator
     public static final String SUFFIX_BEAN_EXTENDED = "$overExtension";
     public static final String OVEREXTENSION_ABSTRACT = "abstract";
 
-    /**
-     * The logger.
-     */
-    protected final Log logger = LogFactory.getLog(DefaultResourceLoader.class);
+    protected final Log logger = LogFactory.getLog(ExtensionBeanDefinitionDecorator.class);
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.springframework.beans.factory.xml.BeanDefinitionDecorator#decorate(org.w3c.dom.Node,
-     * org.springframework.beans.factory.config.BeanDefinitionHolder,
-     * org.springframework.beans.factory.xml.ParserContext)
-     */
+
     public BeanDefinitionHolder decorate(Node node, BeanDefinitionHolder definition, ParserContext parserContext) {
         Attr attr = (Attr) node;
         if (OVEREXTENSION_ABSTRACT.equals(attr.getValue())) {
@@ -48,27 +39,30 @@ public class ExtensionBeanDefinitionDecorator implements BeanDefinitionDecorator
     }
 
     private void redefineAndAbstractParentBean(BeanDefinitionHolder definition, ParserContext parserContext) {
-        AbstractBeanDefinition beanOrigin = (AbstractBeanDefinition) parserContext.getRegistry()
-                .getBeanDefinition(definition.getBeanName());
+        BeanDefinitionRegistry beanDefinitionRegistry = parserContext.getRegistry();
+
+        String beanName = definition.getBeanName();
+
+        AbstractBeanDefinition beanOrigin = (AbstractBeanDefinition) beanDefinitionRegistry.getBeanDefinition(beanName);
 
         // rimuoviamo il bean originale dal registry
-        parserContext.getRegistry().removeBeanDefinition(definition.getBeanName());
+        beanDefinitionRegistry.removeBeanDefinition(beanName);
 
         //Rendiamo abstract il parent
         beanOrigin.setAbstract(true);
 
         // rinominiamo il bean originale secondo la convenzione definita e lo salviamo nel registry
         String newParentName = buildParentName(definition, beanOrigin);
-        parserContext.getRegistry().registerBeanDefinition(newParentName, beanOrigin);
+
+        beanDefinitionRegistry.registerBeanDefinition(newParentName, beanOrigin);
 
 
         // Se eventualmente è già stato settato il parent errore a runtime
         if (definition.getBeanDefinition().getParentName() != null && !definition.getBeanDefinition().getParentName().equalsIgnoreCase("")) {
-            throw new RuntimeException("The attribute parent it's not allowed for bean " + definition.getBeanName());
+            throw new RuntimeException("The attribute parent it's not allowed for bean " + beanName);
         }
 
-        logger.info("Bean with id : '" + definition.getBeanName() + "' extended in "
-                + parserContext.getReaderContext().getResource().getFilename());
+        logger.info("Bean with id : '" + beanName + "' extended in " + parserContext.getReaderContext().getResource().getFilename());
 
         // settiamo come parent il bean originale rinominato
         definition.getBeanDefinition().setParentName(newParentName);
@@ -84,6 +78,5 @@ public class ExtensionBeanDefinitionDecorator implements BeanDefinitionDecorator
 
         return isEmpty(parentName) ? childBeanName + SUFFIX_BEAN_EXTENDED :
                 parentName + "_" + childBeanName + SUFFIX_BEAN_EXTENDED;
-
     }
 }
