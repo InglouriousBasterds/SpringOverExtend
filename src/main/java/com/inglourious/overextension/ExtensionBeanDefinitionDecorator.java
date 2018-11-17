@@ -39,18 +39,18 @@ public class ExtensionBeanDefinitionDecorator implements BeanDefinitionDecorator
     }
 
     private void redefineAndAbstractParentBean(BeanDefinitionHolder definition, ParserContext parserContext) {
-        BeanDefinitionRegistry beanDefinitionRegistry = parserContext.getRegistry();
+        BeanDefinitionRegistry registry = parserContext.getRegistry();
 
         String beanName = definition.getBeanName();
 
-        AbstractBeanDefinition beanOrigin = (AbstractBeanDefinition) beanDefinitionRegistry.getBeanDefinition(beanName);
+        AbstractBeanDefinition beanOrigin = (AbstractBeanDefinition) registry.getBeanDefinition(beanName);
 
-        removeBeanFromRegistry(beanName, beanDefinitionRegistry);
+        removeBeanFromRegistry(beanName, registry);
 
 
         String newParentName = buildParentName(definition, beanOrigin);
 
-        registerBeanAsAbstractWithNewParentName(beanDefinitionRegistry, beanOrigin, newParentName);
+        registerBeanAsAbstractWithNewParentName(registry, beanOrigin, newParentName);
 
 
         // Se eventualmente è già stato settato il parent errore a runtime
