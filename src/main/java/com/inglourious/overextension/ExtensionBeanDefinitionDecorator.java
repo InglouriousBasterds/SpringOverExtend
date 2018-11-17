@@ -54,9 +54,11 @@ public class ExtensionBeanDefinitionDecorator implements BeanDefinitionDecorator
 
         logger.info("Bean with id : '" + beanName + "' extended in " + parserContext.getReaderContext().getResource().getFilename());
 
-        // settiamo come parent il bean originale rinominato
-        definition.getBeanDefinition().setParentName(newParentName);
+        configuredAsParentTheRenamedBean(definition, newParentName);
+    }
 
+    private void configuredAsParentTheRenamedBean(BeanDefinitionHolder definition, String newParentName) {
+        definition.getBeanDefinition().setParentName(newParentName);
     }
 
     private boolean isParentNameAlreadyConfiguredFor(BeanDefinition beanDefinition) {
