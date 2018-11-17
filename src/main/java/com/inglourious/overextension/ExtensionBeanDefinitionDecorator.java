@@ -47,13 +47,10 @@ public class ExtensionBeanDefinitionDecorator implements BeanDefinitionDecorator
 
         removeBeanFromRegistry(beanName, beanDefinitionRegistry);
 
-        //Rendiamo abstract il parent
-        beanOrigin.setAbstract(true);
 
-        // rinominiamo il bean originale secondo la convenzione definita e lo salviamo nel registry
         String newParentName = buildParentName(definition, beanOrigin);
 
-        beanDefinitionRegistry.registerBeanDefinition(newParentName, beanOrigin);
+        registerBeanAsAbstractWithNewParentName(beanDefinitionRegistry, beanOrigin, newParentName);
 
 
         // Se eventualmente è già stato settato il parent errore a runtime
@@ -66,6 +63,11 @@ public class ExtensionBeanDefinitionDecorator implements BeanDefinitionDecorator
         // settiamo come parent il bean originale rinominato
         definition.getBeanDefinition().setParentName(newParentName);
 
+    }
+
+    private void registerBeanAsAbstractWithNewParentName(BeanDefinitionRegistry beanDefinitionRegistry, AbstractBeanDefinition beanOrigin, String newParentName) {
+        beanOrigin.setAbstract(true);
+        beanDefinitionRegistry.registerBeanDefinition(newParentName, beanOrigin);
     }
 
     private void removeBeanFromRegistry(String beanName, BeanDefinitionRegistry beanDefinitionRegistry) {
