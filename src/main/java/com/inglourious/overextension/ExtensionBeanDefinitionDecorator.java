@@ -32,11 +32,11 @@ public class ExtensionBeanDefinitionDecorator implements BeanDefinitionDecorator
                 throw new RuntimeException("Bean with id " + definition.getBeanName() + " doesn't exist no bean to apply extension");
             } else {
                 redefineAndAbstractParentBean(definition, parserContext);
+                return definition;
             }
         } else {
             throw new RuntimeException("Wrong value set in attribute over:extension=" + attr.getValue() + " for " + definition.getBeanName());
         }
-        return definition;
     }
 
     private void redefineAndAbstractParentBean(BeanDefinitionHolder definition, ParserContext parserContext) {
