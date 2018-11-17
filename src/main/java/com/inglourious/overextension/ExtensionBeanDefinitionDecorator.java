@@ -40,20 +40,13 @@ public class ExtensionBeanDefinitionDecorator implements BeanDefinitionDecorator
 
     private void redefineAndAbstractParentBean(BeanDefinitionHolder definition, ParserContext parserContext) {
         BeanDefinitionRegistry registry = parserContext.getRegistry();
-
         String beanName = definition.getBeanName();
 
-        AbstractBeanDefinition beanOrigin = (AbstractBeanDefinition) registry.getBeanDefinition(beanName);
-
-        removeBeanFromRegistry(beanName, registry);
-
+        AbstractBeanDefinition beanOrigin = removeBeanDefinitionFromRegistry(beanName, registry);
 
         String newParentName = buildParentName(definition, beanOrigin);
-
         registerBeanAsAbstractWithNewParentName(registry, beanOrigin, newParentName);
 
-
-        // Se eventualmente è già stato settato il parent errore a runtime
         if (definition.getBeanDefinition().getParentName() != null && !definition.getBeanDefinition().getParentName().equalsIgnoreCase("")) {
             throw new RuntimeException("The attribute parent is not allowed for the bean " + beanName);
         }
@@ -65,13 +58,17 @@ public class ExtensionBeanDefinitionDecorator implements BeanDefinitionDecorator
 
     }
 
+    private AbstractBeanDefinition removeBeanDefinitionFromRegistry(String beanName, BeanDefinitionRegistry registry) {
+        AbstractBeanDefinition beanDefinition = (AbstractBeanDefinition) registry.getBeanDefinition(beanName);
+
+        registry.removeBeanDefinition(beanName);
+
+        return beanDefinition;
+    }
+
     private void registerBeanAsAbstractWithNewParentName(BeanDefinitionRegistry beanDefinitionRegistry, AbstractBeanDefinition beanOrigin, String newParentName) {
         beanOrigin.setAbstract(true);
         beanDefinitionRegistry.registerBeanDefinition(newParentName, beanOrigin);
-    }
-
-    private void removeBeanFromRegistry(String beanName, BeanDefinitionRegistry beanDefinitionRegistry) {
-        beanDefinitionRegistry.removeBeanDefinition(beanName);
     }
 
 
