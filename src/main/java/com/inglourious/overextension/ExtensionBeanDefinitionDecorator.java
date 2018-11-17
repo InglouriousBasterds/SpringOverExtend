@@ -2,6 +2,7 @@ package com.inglourious.overextension;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinitionHolder;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -42,12 +43,12 @@ public class ExtensionBeanDefinitionDecorator implements BeanDefinitionDecorator
         BeanDefinitionRegistry registry = parserContext.getRegistry();
         String beanName = definition.getBeanName();
 
-        AbstractBeanDefinition beanOrigin = removeBeanDefinitionFromRegistry(beanName, registry);
+        AbstractBeanDefinition bean = removeBeanDefinitionFromRegistry(beanName, registry);
 
-        String newParentName = buildParentName(definition, beanOrigin);
-        registerBeanAsAbstractWithNewParentName(registry, beanOrigin, newParentName);
+        String newParentName = buildParentName(definition, bean);
+        registerBeanAsAbstractWithNewParentName(registry, bean, newParentName);
 
-        if (definition.getBeanDefinition().getParentName() != null && !definition.getBeanDefinition().getParentName().equalsIgnoreCase("")) {
+        if (isParentNameAlreadyConfiguredFor(definition.getBeanDefinition())) {
             throw new RuntimeException("The attribute parent is not allowed for the bean " + beanName);
         }
 
@@ -58,6 +59,10 @@ public class ExtensionBeanDefinitionDecorator implements BeanDefinitionDecorator
 
     }
 
+    private boolean isParentNameAlreadyConfiguredFor(BeanDefinition beanDefinition) {
+        return beanDefinition.getParentName() != null && !beanDefinition.getParentName().equalsIgnoreCase("");
+    }
+
     private AbstractBeanDefinition removeBeanDefinitionFromRegistry(String beanName, BeanDefinitionRegistry registry) {
         AbstractBeanDefinition beanDefinition = (AbstractBeanDefinition) registry.getBeanDefinition(beanName);
 
@@ -66,11 +71,10 @@ public class ExtensionBeanDefinitionDecorator implements BeanDefinitionDecorator
         return beanDefinition;
     }
 
-    private void registerBeanAsAbstractWithNewParentName(BeanDefinitionRegistry beanDefinitionRegistry, AbstractBeanDefinition beanOrigin, String newParentName) {
-        beanOrigin.setAbstract(true);
-        beanDefinitionRegistry.registerBeanDefinition(newParentName, beanOrigin);
+    private void registerBeanAsAbstractWithNewParentName(BeanDefinitionRegistry beanDefinitionRegistry, AbstractBeanDefinition beanDefinition, String newParentName) {
+        beanDefinition.setAbstract(true);
+        beanDefinitionRegistry.registerBeanDefinition(newParentName, beanDefinition);
     }
-
 
     private String buildParentName(BeanDefinitionHolder definitionChild, AbstractBeanDefinition beanFather) {
 
