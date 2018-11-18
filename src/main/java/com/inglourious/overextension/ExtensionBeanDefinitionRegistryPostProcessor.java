@@ -7,10 +7,10 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.beans.factory.support.BeanDefinitionRegistryPostProcessor;
 import org.springframework.context.annotation.ScannedGenericBeanDefinition;
 import org.springframework.stereotype.Component;
 
@@ -24,19 +24,12 @@ import static com.inglourious.overextension.ExtensionBeanDefinitionDecorator.SUF
  * Created by gbrescia on 26/03/2018.
  */
 @Component
-public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanDefinitionRegistryPostProcessor {
+public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactoryPostProcessor {
 
     /**
      * The logger.
      */
     protected final Log logger = LogFactory.getLog(ExtensionBeanDefinitionRegistryPostProcessor.class);
-
-    @Override
-    public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) throws BeansException {
-        if (registry instanceof ConfigurableListableBeanFactory) {
-            postProcessBeanFactory((ConfigurableListableBeanFactory) registry);
-        }
-    }
 
     private void remappingRegistry(BeanDefinitionRegistry registry, String beanNameOfChildren, ScannedGenericBeanDefinition beanChildrenResult, String beanNameOfParent, BeanDefinition beanParentDefinition) {
         // rimuoviamo il bean originale dal registry
