@@ -26,40 +26,11 @@ import static com.inglourious.overextension.ExtensionBeanDefinitionDecorator.SUF
 @Component
 public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactoryPostProcessor {
 
-    /**
-     * The logger.
-     */
-    protected final Log logger = LogFactory.getLog(ExtensionBeanDefinitionRegistryPostProcessor.class);
-
-    private void remappingRegistry(BeanDefinitionRegistry registry, String beanNameOfChildren, ScannedGenericBeanDefinition beanChildrenResult, String beanNameOfParent, BeanDefinition beanParentDefinition) {
-        // rimuoviamo il bean originale dal registry
-        registry.removeBeanDefinition(beanNameOfParent);
-
-        //Rendiamo abstract il parent
-        ((AbstractBeanDefinition) beanParentDefinition).setAbstract(true);
-
-        // rinominiamo il bean originale secondo la convenzione definita e lo salviamo nel registry
-        String newParentName = buildParentName(beanNameOfParent);
-        registry.registerBeanDefinition(newParentName, beanParentDefinition);
-
-        // rimuoviamo il bean originale dal registry
-        registry.removeBeanDefinition(beanNameOfChildren);
-
-        //Rendiamo abstract il parent
-        beanChildrenResult.setParentName(newParentName);
-
-        registry.registerBeanDefinition(beanNameOfParent, beanChildrenResult);
-    }
-
-
-    public String buildParentName(String parentName) {
-        return parentName + "_" + SUFFIX_BEAN_EXTENDED;
-    }
-
+    private final Log logger = LogFactory.getLog(ExtensionBeanDefinitionRegistryPostProcessor.class);
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
-        List<ReplacerKeyRegistry> addInMapRegistry = new ArrayList<ReplacerKeyRegistry>();
+        List<ReplacerKeyRegistry> addInMapRegistry = new ArrayList<>();
         String[] beanDefinitionNames = configurableListableBeanFactory.getBeanDefinitionNames();
 
         for (String beanDefinitionName : beanDefinitionNames) {
@@ -156,6 +127,32 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
             }
         }
     }
+
+    private void remappingRegistry(BeanDefinitionRegistry registry, String beanNameOfChildren, ScannedGenericBeanDefinition beanChildrenResult, String beanNameOfParent, BeanDefinition beanParentDefinition) {
+        // rimuoviamo il bean originale dal registry
+        registry.removeBeanDefinition(beanNameOfParent);
+
+        //Rendiamo abstract il parent
+        ((AbstractBeanDefinition) beanParentDefinition).setAbstract(true);
+
+        // rinominiamo il bean originale secondo la convenzione definita e lo salviamo nel registry
+        String newParentName = buildParentName(beanNameOfParent);
+        registry.registerBeanDefinition(newParentName, beanParentDefinition);
+
+        // rimuoviamo il bean originale dal registry
+        registry.removeBeanDefinition(beanNameOfChildren);
+
+        //Rendiamo abstract il parent
+        beanChildrenResult.setParentName(newParentName);
+
+        registry.registerBeanDefinition(beanNameOfParent, beanChildrenResult);
+    }
+
+
+    private String buildParentName(String parentName) {
+        return parentName + "_" + SUFFIX_BEAN_EXTENDED;
+    }
+
 
 
 }
