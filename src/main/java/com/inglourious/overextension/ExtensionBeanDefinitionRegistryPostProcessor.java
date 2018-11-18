@@ -123,29 +123,38 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
 
         if (addInMapRegistry.size() > 0) {
             for (ReplacerKeyRegistry replacerKeyRegistry : addInMapRegistry) {
-                remappingRegistry((BeanDefinitionRegistry) configurableListableBeanFactory, replacerKeyRegistry.getBeanNameOfChildren(), replacerKeyRegistry.getBeanChildrenResult(), replacerKeyRegistry.getBeanNameOfParent(), replacerKeyRegistry.getBeanParentDefinition());
+                remappingRegistry((BeanDefinitionRegistry) configurableListableBeanFactory,
+                        replacerKeyRegistry.getBeanNameOfChildren(),
+                        replacerKeyRegistry.getBeanChildrenResult(),
+                        replacerKeyRegistry.getBeanNameOfParent(),
+                        replacerKeyRegistry.getBeanParentDefinition());
             }
         }
     }
 
-    private void remappingRegistry(BeanDefinitionRegistry registry, String beanNameOfChildren, ScannedGenericBeanDefinition beanChildrenResult, String beanNameOfParent, BeanDefinition beanParentDefinition) {
+    private void remappingRegistry(BeanDefinitionRegistry registry,
+                                   String childBeanName,
+                                   BeanDefinition childBeanDefinition,
+                                   String parentBeanName,
+                                   BeanDefinition beanParentDefinition) {
+
         // rimuoviamo il bean originale dal registry
-        registry.removeBeanDefinition(beanNameOfParent);
+        registry.removeBeanDefinition(parentBeanName);
 
         //Rendiamo abstract il parent
         ((AbstractBeanDefinition) beanParentDefinition).setAbstract(true);
 
         // rinominiamo il bean originale secondo la convenzione definita e lo salviamo nel registry
-        String newParentName = buildParentName(beanNameOfParent);
+        String newParentName = buildParentName(parentBeanName);
         registry.registerBeanDefinition(newParentName, beanParentDefinition);
 
         // rimuoviamo il bean originale dal registry
-        registry.removeBeanDefinition(beanNameOfChildren);
+        registry.removeBeanDefinition(childBeanName);
 
         //Rendiamo abstract il parent
-        beanChildrenResult.setParentName(newParentName);
+        childBeanDefinition.setParentName(newParentName);
 
-        registry.registerBeanDefinition(beanNameOfParent, beanChildrenResult);
+        registry.registerBeanDefinition(parentBeanName, childBeanDefinition);
     }
 
 

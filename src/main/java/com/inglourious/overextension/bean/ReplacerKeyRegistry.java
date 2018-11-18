@@ -1,7 +1,6 @@
 package com.inglourious.overextension.bean;
 
 import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.context.annotation.ScannedGenericBeanDefinition;
 
 /**
  * Created by gbrescia on 27/03/2018.
@@ -9,12 +8,12 @@ import org.springframework.context.annotation.ScannedGenericBeanDefinition;
 public class ReplacerKeyRegistry {
 
     private final String childBeanName;
-    private final ScannedGenericBeanDefinition childBeanResult;
+    private final BeanDefinition childBeanResult;
     private final String parentBeanName;
     private final BeanDefinition parentBeanDefinition;
 
     public ReplacerKeyRegistry(String childBeanName,
-                               ScannedGenericBeanDefinition beanChildrenResult,
+                               BeanDefinition beanChildrenResult,
                                String parentBeanName,
                                BeanDefinition parentBeanDefinition) {
         this.childBeanName = childBeanName;
@@ -27,7 +26,7 @@ public class ReplacerKeyRegistry {
         return childBeanName;
     }
 
-    public ScannedGenericBeanDefinition getBeanChildrenResult() {
+    public BeanDefinition getBeanChildrenResult() {
         return childBeanResult;
     }
 
