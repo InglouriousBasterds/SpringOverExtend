@@ -22,21 +22,30 @@ public class ExtensionBeanDefinitionDecorator implements BeanDefinitionDecorator
     public static final String SUFFIX_BEAN_EXTENDED = "$overExtension";
     public static final String OVEREXTENSION_ABSTRACT = "abstract";
 
-    protected final Log logger = LogFactory.getLog(ExtensionBeanDefinitionDecorator.class);
+    private final Log logger = LogFactory.getLog(ExtensionBeanDefinitionDecorator.class);
 
-
+    @Override
     public BeanDefinitionHolder decorate(Node node, BeanDefinitionHolder definition, ParserContext parserContext) {
-        Attr attr = (Attr) node;
-        if (OVEREXTENSION_ABSTRACT.equals(attr.getValue())) {
-            if (parserContext.getRegistry().getBeanDefinition(definition.getBeanName()) == null) {
-                throw new RuntimeException("Bean with id " + definition.getBeanName() + " doesn't exist no bean to apply extension");
-            } else {
+
+        if (isAttributeValueAbstract(node)) {
+            if (isBeanDefinedInRegistry(definition, parserContext.getRegistry())) {
                 redefineAndAbstractParentBean(definition, parserContext);
                 return definition;
+            } else {
+                throw new RuntimeException("Bean with id " + definition.getBeanName() + " doesn't exist no bean to apply extension");
             }
         } else {
-            throw new RuntimeException("Wrong value set in attribute over:extension=" + attr.getValue() + " for " + definition.getBeanName());
+            throw new RuntimeException("Wrong value set in attribute over:extension=" + ((Attr) node).getValue() + " for " + definition.getBeanName());
         }
+    }
+
+    private boolean isAttributeValueAbstract(Node node) {
+        String attributeValue = ((Attr) node).getValue();
+        return OVEREXTENSION_ABSTRACT.equals(attributeValue);
+    }
+
+    private boolean isBeanDefinedInRegistry(BeanDefinitionHolder definition, BeanDefinitionRegistry registry) {
+        return registry.getBeanDefinition(definition.getBeanName()) != null;
     }
 
     private void redefineAndAbstractParentBean(BeanDefinitionHolder definition, ParserContext parserContext) {
