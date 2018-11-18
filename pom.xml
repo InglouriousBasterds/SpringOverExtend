@@ -22,6 +22,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+		<maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
 		<skip.source>false</skip.source>
 	</properties>
 
@@ -68,6 +69,11 @@
 				<configuration>
 					<skipSource>${skip.source}</skipSource>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surefire-plugin.version}</version>
 			</plugin>
 		</plugins>
 	</build>
