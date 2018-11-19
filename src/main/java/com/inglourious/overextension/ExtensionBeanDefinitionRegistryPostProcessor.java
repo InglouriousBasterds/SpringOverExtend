@@ -13,6 +13,7 @@ import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.ScannedGenericBeanDefinition;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,37 +32,28 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
         List<ReplacerKeyRegistry> addInMapRegistry = new ArrayList<>();
-        String[] beanDefinitionNames = configurableListableBeanFactory.getBeanDefinitionNames();
 
-        for (String beanDefinitionName : beanDefinitionNames) {
-
-            OverExtension annotationOnBean = configurableListableBeanFactory.findAnnotationOnBean(beanDefinitionName, OverExtension.class);
+        for (String beanDefinitionName : configurableListableBeanFactory.getBeanDefinitionNames()) {
 
             try {
-                if (annotationOnBean != null) {
+                if (isBeanAnnotatedWithOverExtension(beanDefinitionName, configurableListableBeanFactory)) {
+
                     String beanNameOfChildren = beanDefinitionName;
+
                     if (logger.isDebugEnabled()) {
                         logger.debug("Find " + beanNameOfChildren + " candidate for OverExtension");
                     }
 
                     ScannedGenericBeanDefinition beanChildrenResult = (ScannedGenericBeanDefinition) configurableListableBeanFactory.getBeanDefinition(beanNameOfChildren);
+
                     String superClassName = beanChildrenResult.getMetadata().getSuperClassName();
-                    Map<String, Object> annotationAttributes = beanChildrenResult.getMetadata().getAnnotationAttributes(OverExtension.class.getName(), true);
-                    if (superClassName == null
-                            || "".equalsIgnoreCase(superClassName)
+
+                    if (StringUtils.isEmpty(superClassName)
                             || Object.class.getCanonicalName().equalsIgnoreCase(superClassName)) {
                         throw new BeanCreationException("Bean " + beanNameOfChildren + " annotated with OverExtension must extend a superclass");
                     }
 
-                    String[] beanNamesForType;
-                    Class<?> classForSuperClass = Class.forName(superClassName);
-                    Object extendBeanId = annotationAttributes.get("extendBeanId");
-                    if (extendBeanId != null
-                            && !"".equalsIgnoreCase(extendBeanId.toString())) {
-                        beanNamesForType = new String[]{extendBeanId.toString()};
-                    } else {
-                        beanNamesForType = configurableListableBeanFactory.getBeanNamesForType(classForSuperClass);
-                    }
+                    String[] beanNamesForType = getBeanNamesForType(configurableListableBeanFactory, beanChildrenResult, superClassName);
 
                     if (beanNamesForType == null) {
                         throw new BeanCreationException("Bean " + beanNameOfChildren + " must extends a spring bean component or specify extendBeanId , doesn't exist a spring bean for the class " + superClassName + " ");
@@ -88,7 +80,7 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
                         beanParentDefinition = configurableListableBeanFactory.getBeanDefinition(beanNamesForType[0]);
 
                         Class classOfParent = Class.forName(beanParentDefinition.getBeanClassName());
-                        boolean isAssignable = classOfParent.isAssignableFrom(classForSuperClass);
+                        boolean isAssignable = classOfParent.isAssignableFrom(Class.forName(superClassName));
 
                         if (beanParentDefinition.getBeanClassName().equalsIgnoreCase(superClassName)
                                 || isAssignable) {
@@ -130,6 +122,23 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
                         replacerKeyRegistry.getBeanParentDefinition());
             }
         }
+    }
+
+    private String[] getBeanNamesForType(ConfigurableListableBeanFactory configurableListableBeanFactory, ScannedGenericBeanDefinition beanChildrenResult, String superClassName) throws ClassNotFoundException {
+        String[] beanNamesForType;
+        Map<String, Object> annotationAttributes = beanChildrenResult.getMetadata().getAnnotationAttributes(OverExtension.class.getName(), true);
+        Class<?> classForSuperClass = Class.forName(superClassName);
+        Object extendBeanId = annotationAttributes.get("extendBeanId");
+        if (extendBeanId != null && !"".equalsIgnoreCase(extendBeanId.toString())) {
+            beanNamesForType = new String[]{extendBeanId.toString()};
+        } else {
+            beanNamesForType = configurableListableBeanFactory.getBeanNamesForType(classForSuperClass);
+        }
+        return beanNamesForType;
+    }
+
+    private boolean isBeanAnnotatedWithOverExtension(String beanDefinitionName, ConfigurableListableBeanFactory configurableListableBeanFactory) {
+        return configurableListableBeanFactory.findAnnotationOnBean(beanDefinitionName, OverExtension.class) != null;
     }
 
     private void remappingRegistry(BeanDefinitionRegistry registry,
