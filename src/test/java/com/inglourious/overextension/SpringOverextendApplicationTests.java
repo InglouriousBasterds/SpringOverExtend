@@ -4,7 +4,6 @@ import com.inglourious.overextension.bean.BeanParentMock;
 import com.inglourious.overextension.bean.BeanProductMock;
 import com.inglourious.overextension.bean.BeanWithReferenceMock;
 import com.inglourious.overextension.bean.BeanWithReferenceMockExtParentMock;
-import junit.framework.TestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +14,14 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.Iterator;
 import java.util.Map;
 
+import static org.junit.Assert.*;
+
 @RunWith(SpringRunner.class)
 @ContextConfiguration(locations = {"classpath:spring-config/main-spring-beans.xml",
         "classpath:spring-config/project-spring-beans-A.xml",
         "classpath:spring-config/project-spring-beans-B.xml",
         "classpath:spring-config/project-spring-beans-C.xml",})
-public class SpringOverextendApplicationTests  extends TestCase {
+public class SpringOverextendApplicationTests {
 
     @Autowired
     ApplicationContext ctx;
