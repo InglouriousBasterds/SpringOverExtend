@@ -12,7 +12,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @ContextConfiguration(classes = {SpringOverextendConfiguration.class})
@@ -28,12 +29,12 @@ public class SpringOverextendAnnotationApplicationTests {
     public final void testProjectA() {
 
         AbstractMainConfigurationTestBean beanExtended = ctx.getBean(MainConfigurationTestBean.class);
-        assertNotNull(beanExtended);
+
         assertTrue(beanExtended.getConfigA().equalsIgnoreCase(FinalVariable.CONFIG_A));
         assertTrue(beanExtended.getConfigC().equalsIgnoreCase(FinalVariable.CONFIG_C_EXTENDED));
 
         beanExtended = (MainConfigurationTestBean) ctx.getBean("mainConfigurationTestBean");
-        assertNotNull(beanExtended);
+
         assertTrue(beanExtended.getConfigA().equalsIgnoreCase(FinalVariable.CONFIG_A));
         assertTrue(beanExtended.getConfigC().equalsIgnoreCase(FinalVariable.CONFIG_C_EXTENDED));
     }
@@ -42,11 +43,11 @@ public class SpringOverextendAnnotationApplicationTests {
     public final void testProjectInject() {
 
         InjectOfMainConfigurationTestBean injectABeanExtended = ctx.getBean(InjectOfMainConfigurationTestBean.class);
-        assertNotNull(injectABeanExtended);
+
+
         assertTrue(injectABeanExtended.getMainConfigurationTestBean().getConfigA().equalsIgnoreCase(FinalVariable.CONFIG_A));
         assertTrue(injectABeanExtended.getMainConfigurationTestBean().getConfigC().equalsIgnoreCase(FinalVariable.CONFIG_C_EXTENDED));
     }
-
 
 
     /**
@@ -56,7 +57,6 @@ public class SpringOverextendAnnotationApplicationTests {
     @Test
     public final void testProjectWithId() {
         AbstractMainConfigurationTestBean beanExtended = (AbstractMainConfigurationTestBean) ctx.getBean("BeanC_Child");
-        assertNotNull(beanExtended);
 
         assertEquals(beanExtended.getConfigB(), FinalVariable.CONFIG_B_EXTENDED);
         assertTrue(beanExtended.getConfigA().equalsIgnoreCase(FinalVariable.CONFIG_A));
@@ -67,7 +67,7 @@ public class SpringOverextendAnnotationApplicationTests {
 
     @Test
     public final void testOverExtendSpringBeanIdCore() {
-        assertTrue(setValueFromOverExtendAutowiredAnnotationProcessor != 0 );
+        assertTrue(setValueFromOverExtendAutowiredAnnotationProcessor != 0);
     }
 
 }
