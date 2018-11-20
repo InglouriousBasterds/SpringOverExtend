@@ -33,11 +33,9 @@ public class SpringOverextendApplicationTests {
     @Test
     public final void testProjectA() {
         assertTrue(ctx.containsBean("BeanA" + ExtensionBeanDefinitionDecorator.SUFFIX_BEAN_EXTENDED));
-        System.out.println("BeanA" + ExtensionBeanDefinitionDecorator.SUFFIX_BEAN_EXTENDED + " exist on spring context ");
+
         BeanProductMock beanExtended = (BeanProductMock) ctx.getBean("BeanA");
-        assertNotNull(beanExtended);
-        String callExtendend = beanExtended.cal();
-        System.out.println("callExtendend :" + callExtendend);
+
         assertEquals(beanExtended.getB(), "B padre");
         assertEquals(beanExtended.getA(), "A figlio");
         assertEquals(beanExtended.getC(), "C figlio");
@@ -50,9 +48,6 @@ public class SpringOverextendApplicationTests {
     public final void testProjectB() {
         BeanWithReferenceMock beanChild = (BeanWithReferenceMock) ctx.getBean("BeanCProgetto");
         BeanProductMock myBeanExtended = beanChild.getMock();
-        assertNotNull(myBeanExtended);
-        String callExtendend = myBeanExtended.cal();
-        System.out.println("callExtended :" + callExtendend);
         BeanProductMock beanBExt = (BeanProductMock) ctx.getBean("BeanB");
         assertEquals(myBeanExtended, beanBExt);
     }
@@ -64,10 +59,8 @@ public class SpringOverextendApplicationTests {
     public final void testProjectC() {
 
         BeanWithReferenceMockExtParentMock beanC = (BeanWithReferenceMockExtParentMock) ctx.getBean("BeanC");
-        assertNotNull(beanC);
 
         BeanProductMock beanA = (BeanProductMock) ctx.getBean("BeanA");
-        assertNotNull(beanA);
         assertNotSame(beanC.getMockParent().getMock(), beanA);
 
         // BeanC-Father viene overridato in progettoC
@@ -83,7 +76,6 @@ public class SpringOverextendApplicationTests {
     public final void testProjectD() {
 
         BeanProductMock beanD = (BeanProductMock) ctx.getBean("BeanD");
-        assertNotNull(beanD);
 
         // BeanC-Father viene overridato in progettoC
         assertEquals(beanD.getA(), "A padre");
@@ -98,23 +90,18 @@ public class SpringOverextendApplicationTests {
     @Test
     public final void testProjectMergeMappa() {
         assertTrue(ctx.containsBean("BeanTestMappa" + ExtensionBeanDefinitionDecorator.SUFFIX_BEAN_EXTENDED));
-        System.out.println("BeanTestMappa" + ExtensionBeanDefinitionDecorator.SUFFIX_BEAN_EXTENDED + " exist on spring context ");
 
         BeanProductMock beanExtended = (BeanProductMock) ctx.getBean("BeanTestMappa");
-        assertNotNull(beanExtended);
-        System.out.println("callExtendend");
         Iterator it = beanExtended.getMappa().entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<String, String> pairs = (Map.Entry<String, String>) it.next();
 
             if (pairs.getKey().equalsIgnoreCase("key")) {
                 assertEquals(pairs.getValue(), "valoreProdotto");
-                System.out.println(pairs.getKey() + " = " + pairs.getValue());
             }
 
             if (pairs.getKey().equalsIgnoreCase("key2")) {
                 assertEquals(pairs.getValue(), "valoreFiglio");
-                System.out.println(pairs.getKey() + " = " + pairs.getValue());
             }
         }
     }
