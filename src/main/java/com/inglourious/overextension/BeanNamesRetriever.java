@@ -19,7 +19,7 @@ public class BeanNamesRetriever {
         Object extendBeanId = getExtendBeanIdAttribute(metadata);
 
         return isValid(extendBeanId) ? new String[]{extendBeanId.toString()} :
-                getBeanNamesForTypeFor(metadata.getSuperClassName(), this.configurableListableBeanFactory);
+                getBeanNamesForTypeFor(metadata.getSuperClassName());
     }
 
     private Object getExtendBeanIdAttribute(AnnotationMetadata metadata) {
@@ -32,8 +32,7 @@ public class BeanNamesRetriever {
         return extendBeanId != null && !"".equalsIgnoreCase(extendBeanId.toString());
     }
 
-    private String[] getBeanNamesForTypeFor(String superClassName,
-                                            ConfigurableListableBeanFactory configurableListableBeanFactory) throws ClassNotFoundException {
+    private String[] getBeanNamesForTypeFor(String superClassName) throws ClassNotFoundException {
         return this.configurableListableBeanFactory.getBeanNamesForType(Class.forName(superClassName));
     }
 }
