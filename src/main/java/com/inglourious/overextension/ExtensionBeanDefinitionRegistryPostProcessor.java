@@ -24,12 +24,12 @@ import static org.springframework.util.StringUtils.isEmpty;
 public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactoryPostProcessor {
 
     private final Log logger = LogFactory.getLog(ExtensionBeanDefinitionRegistryPostProcessor.class);
-    private final BeanNamesRetriever beanNamesRetriever;
+    private final ParentBeanNamesRetriever parentBeanNamesRetriever;
     private final BeanRedefinitionRegistry beanRedefinitionRegistry;
 
-    public ExtensionBeanDefinitionRegistryPostProcessor(BeanNamesRetriever beanNamesRetriever,
+    public ExtensionBeanDefinitionRegistryPostProcessor(ParentBeanNamesRetriever parentBeanNamesRetriever,
                                                         BeanRedefinitionRegistry beanRedefinitionRegistry) {
-        this.beanNamesRetriever = beanNamesRetriever;
+        this.parentBeanNamesRetriever = parentBeanNamesRetriever;
         this.beanRedefinitionRegistry = beanRedefinitionRegistry;
     }
 
@@ -52,7 +52,7 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
                         throw new BeanCreationException("Bean " + beanDefinitionName + " annotated with OverExtension must extend a superclass");
                     }
 
-                    List<String> parentBeanNames = beanNamesRetriever.from(beanDefinition.getMetadata())
+                    List<String> parentBeanNames = parentBeanNamesRetriever.from(beanDefinition.getMetadata())
                             .orElseThrow(() -> new BeanCreationException("Bean " + beanDefinitionName + " must extends a spring bean component or specify extendBeanId , doesn't exist a spring bean for the class " + superClassName + " "));
 
                     Optional<ParentBean> parentBean = parentBeanNames.stream()

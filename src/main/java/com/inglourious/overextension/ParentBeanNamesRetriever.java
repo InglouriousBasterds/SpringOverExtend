@@ -11,11 +11,11 @@ import java.util.Optional;
 import static java.util.Arrays.asList;
 import static java.util.Optional.of;
 
-public class BeanNamesRetriever {
+public class ParentBeanNamesRetriever {
 
     private ConfigurableListableBeanFactory configurableListableBeanFactory;
 
-    public BeanNamesRetriever(ConfigurableListableBeanFactory configurableListableBeanFactory) {
+    public ParentBeanNamesRetriever(ConfigurableListableBeanFactory configurableListableBeanFactory) {
         this.configurableListableBeanFactory = configurableListableBeanFactory;
     }
 

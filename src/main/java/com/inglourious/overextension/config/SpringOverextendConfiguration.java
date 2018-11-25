@@ -1,8 +1,8 @@
 package com.inglourious.overextension.config;
 
-import com.inglourious.overextension.BeanNamesRetriever;
 import com.inglourious.overextension.BeanRedefinitionRegistry;
 import com.inglourious.overextension.ExtensionBeanDefinitionRegistryPostProcessor;
+import com.inglourious.overextension.ParentBeanNamesRetriever;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
@@ -16,8 +16,8 @@ import org.springframework.context.annotation.Configuration;
 public class SpringOverextendConfiguration {
 
     @Bean
-    public BeanNamesRetriever beanNameResolver(ConfigurableListableBeanFactory configurableListableBeanFactory) {
-        return new BeanNamesRetriever(configurableListableBeanFactory);
+    public ParentBeanNamesRetriever parentBeanNamesRetriever(ConfigurableListableBeanFactory configurableListableBeanFactory) {
+        return new ParentBeanNamesRetriever(configurableListableBeanFactory);
     }
 
     @Bean
@@ -26,9 +26,9 @@ public class SpringOverextendConfiguration {
     }
 
     @Bean
-    public BeanFactoryPostProcessor extensionBeanDefinitionRegistryPostProcessor(BeanNamesRetriever beanNamesRetriever,
+    public BeanFactoryPostProcessor extensionBeanDefinitionRegistryPostProcessor(ParentBeanNamesRetriever parentBeanNamesRetriever,
                                                                                  BeanRedefinitionRegistry beanRedefinitionRegistry) {
-        return new ExtensionBeanDefinitionRegistryPostProcessor(beanNamesRetriever, beanRedefinitionRegistry);
+        return new ExtensionBeanDefinitionRegistryPostProcessor(parentBeanNamesRetriever, beanRedefinitionRegistry);
     }
 
 }
