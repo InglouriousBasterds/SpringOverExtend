@@ -56,9 +56,9 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
                             .orElseThrow(() -> new BeanCreationException("Bean " + beanDefinitionName + " must extends a spring bean component or specify extendBeanId , doesn't exist a spring bean for the class " + superClassName + " "));
 
                     Optional<ParentBean> parentBean = parentBeanNames.stream()
-                            .map(parentBeanName -> new ParentBean(parentBeanName, configurableListableBeanFactory.getBeanDefinition(parentBeanName)))
+                            .map(name -> new ParentBean(name, configurableListableBeanFactory.getBeanDefinition(name)))
                             .filter(ParentBean::hasValidName)
-                            .filter(pb -> pb.isAssignableTo(superClassName))
+                            .filter(pb -> pb.isSubClassOf(superClassName))
                             .findFirst();
 
                     ReplacerKeyRegistry replacerKeyRegistry = parentBean.map(pb -> new ReplacerKeyRegistry(beanDefinitionName, beanDefinition, pb.getName(), pb.getDefinition()))
@@ -121,7 +121,6 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
         return parentName + "_" + SUFFIX_BEAN_EXTENDED;
     }
 
-
     private class ParentBean {
         private final String name;
         private final BeanDefinition definition;
@@ -143,15 +142,14 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
             return name != null && !name.isEmpty();
         }
 
-        public boolean isAssignableTo(String superClassName) {
-            return definition.getBeanClassName().equalsIgnoreCase(superClassName) || isAss(superClassName);
-
+        public boolean isSubClassOf(String className) {
+            return className.equalsIgnoreCase(definition.getBeanClassName())
+                    || isAssignableTo(className);
         }
 
-        private boolean isAss(String n) {
-
+        private boolean isAssignableTo(String className) {
             try {
-                return forName(definition.getBeanClassName()).isAssignableFrom(forName(n));
+                return forName(definition.getBeanClassName()).isAssignableFrom(forName(className));
             } catch (ClassNotFoundException e) {
                 return false;
             }
