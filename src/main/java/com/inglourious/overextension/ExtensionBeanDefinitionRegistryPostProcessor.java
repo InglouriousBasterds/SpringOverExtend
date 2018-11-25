@@ -15,8 +15,11 @@ import org.springframework.context.annotation.ScannedGenericBeanDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 import static com.inglourious.overextension.ExtensionBeanDefinitionDecorator.SUFFIX_BEAN_EXTENDED;
+import static java.lang.Class.forName;
 import static org.springframework.util.StringUtils.isEmpty;
 
 /**
@@ -56,51 +59,18 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
                         throw new BeanCreationException("Bean " + beanDefinitionName + " must extends a spring bean component or specify extendBeanId , doesn't exist a spring bean for the class " + superClassName + " ");
                     }
 
-                    //The bean name for the parent to extend
-                    ParentBean parentBean = null;
-                    String parentBeanName = null;
-                    BeanDefinition parentBeanDefinition = null;
-                    boolean isValidSuperClass = true;
+                    Optional<ParentBean> parentBean = Stream.of(parentBeanNames)
+                            .map(parentBeanName -> new ParentBean(parentBeanName, configurableListableBeanFactory.getBeanDefinition(parentBeanName)))
+                            .filter(ParentBean::hasValidName)
+                            .filter(pb -> pb.isAssignableTo(superClassName))
+                            .findFirst();
 
 
-                    if (parentBeanNames.length > 1) {
-                        for (String beanNameForType : parentBeanNames) {
-                            parentBeanDefinition = configurableListableBeanFactory.getBeanDefinition(beanNameForType);
-                            if (parentBeanDefinition.getBeanClassName().equalsIgnoreCase(superClassName)) {
-                                parentBeanName = beanNameForType;
-                                isValidSuperClass = true;
-                                parentBean = new ParentBean(beanNameForType, parentBeanDefinition);
-                                break;
-                            } else if (beanNameForType.equalsIgnoreCase(beanDefinitionName)) {
-                                isValidSuperClass = false;
-                            }
-                        }
+                    if (parentBean.isPresent()) {
+                        addInMapRegistry.add(new ReplacerKeyRegistry(beanDefinitionName, beanDefinition, parentBean.get().getName(), parentBean.get().getDefinition()));
                     } else {
-                        parentBeanDefinition = configurableListableBeanFactory.getBeanDefinition(parentBeanNames[0]);
-
-                        Class classOfParent = Class.forName(parentBeanDefinition.getBeanClassName());
-                        boolean isAssignable = classOfParent.isAssignableFrom(Class.forName(superClassName));
-
-                        if (parentBeanDefinition.getBeanClassName().equalsIgnoreCase(superClassName) || isAssignable) {
-                            parentBeanName = parentBeanNames[0];
-                            parentBean = new ParentBean(parentBeanNames[0], parentBeanDefinition);
-                        } else if (parentBeanNames[0].equalsIgnoreCase(beanDefinitionName)) {
-                            isValidSuperClass = false;
-                        }
-
+                        throw new BeanCreationException("Bean " + beanDefinitionName + " must extends a unique spring bean component  or specify extendBeanId. Invalid superClass " + superClassName + " (" + parentBeanNames.toString() + ")");
                     }
-
-
-                    if (parentBean.getName() == null || parentBean.getName().equalsIgnoreCase("")) {
-
-                        if (!isValidSuperClass) {
-                            throw new BeanCreationException("Bean " + beanDefinitionName + " must extends a unique spring bean component  or specify extendBeanId. Invalid superClass " + superClassName + " (" + parentBeanNames.toString() + ")");
-                        } else {
-                            throw new BeanCreationException("Bean " + beanDefinitionName + " must extends a unique spring bean component or specify extendBeanId ,empty or too much spring bean for the " + superClassName + " (" + parentBeanNames.toString() + ")");
-                        }
-                    }
-
-                    addInMapRegistry.add(new ReplacerKeyRegistry(beanDefinitionName, beanDefinition, parentBean.getName(), parentBean.getDefinition()));
                 }
             } catch (ClassNotFoundException e) {
                 logger.error("", e);
@@ -108,7 +78,6 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
                 logger.error("Bean Creation error on OverExtension", be);
             }
         }
-
 
         if (addInMapRegistry.size() > 0) {
             for (ReplacerKeyRegistry replacerKeyRegistry : addInMapRegistry) {
@@ -176,6 +145,24 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
 
         public BeanDefinition getDefinition() {
             return definition;
+        }
+
+        public boolean hasValidName() {
+            return name != null && !name.isEmpty();
+        }
+
+        public boolean isAssignableTo(String superClassName) {
+            return definition.getBeanClassName().equalsIgnoreCase(superClassName) || isAss(superClassName);
+
+        }
+
+        private boolean isAss(String n) {
+
+            try {
+                return forName(definition.getBeanClassName()).isAssignableFrom(forName(n));
+            } catch (ClassNotFoundException e) {
+                return false;
+            }
         }
     }
 }
