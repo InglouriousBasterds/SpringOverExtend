@@ -3,34 +3,32 @@ package com.inglourious.overextension;
 import com.inglourious.overextension.annotation.OverExtension;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.annotation.ScannedGenericBeanDefinition;
+import org.springframework.core.type.AnnotationMetadata;
 
 import java.util.Map;
 
 public class BeanNameResolver {
 
-
-
     public String[] getBeanNamesForType(ScannedGenericBeanDefinition beanChildrenResult,
-                                        String superClassName, ConfigurableListableBeanFactory configurableListableBeanFactory1) throws ClassNotFoundException {
+                                        ConfigurableListableBeanFactory configurableListableBeanFactory) throws ClassNotFoundException {
 
-        Object extendBeanId = getExtendBeanIdAttribute(beanChildrenResult);
+        Object extendBeanId = getExtendBeanIdAttribute(beanChildrenResult.getMetadata());
 
         return isValid(extendBeanId) ? new String[]{extendBeanId.toString()} :
-                getBeanNamesForTypeFor(superClassName, configurableListableBeanFactory1);
+                getBeanNamesForTypeFor(beanChildrenResult.getMetadata(), configurableListableBeanFactory);
     }
 
+    private Object getExtendBeanIdAttribute(AnnotationMetadata metadata) {
+        Map<String, Object> annotationAttributes = metadata.getAnnotationAttributes(OverExtension.class.getName(), true);
 
-    private String[] getBeanNamesForTypeFor(String superClassName, ConfigurableListableBeanFactory configurableListableBeanFactory1) throws ClassNotFoundException {
-        return configurableListableBeanFactory1.getBeanNamesForType(Class.forName(superClassName));
+        return annotationAttributes.get("extendBeanId");
     }
 
     private boolean isValid(Object extendBeanId) {
         return extendBeanId != null && !"".equalsIgnoreCase(extendBeanId.toString());
     }
 
-    private Object getExtendBeanIdAttribute(ScannedGenericBeanDefinition beanChildrenResult) {
-        Map<String, Object> annotationAttributes = beanChildrenResult.getMetadata().getAnnotationAttributes(OverExtension.class.getName(), true);
-
-        return annotationAttributes.get("extendBeanId");
+    private String[] getBeanNamesForTypeFor(AnnotationMetadata metadata, ConfigurableListableBeanFactory configurableListableBeanFactory) throws ClassNotFoundException {
+        return configurableListableBeanFactory.getBeanNamesForType(Class.forName(metadata.getSuperClassName()));
     }
 }
