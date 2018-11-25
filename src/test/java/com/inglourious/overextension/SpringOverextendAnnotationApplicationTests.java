@@ -4,7 +4,6 @@ import com.inglourious.overextension.bean.AbstractMainConfigurationTestBean;
 import com.inglourious.overextension.beanWithAnnotation.FinalVariable;
 import com.inglourious.overextension.beanWithAnnotation.InjectOfMainConfigurationTestBean;
 import com.inglourious.overextension.beanWithAnnotation.MainConfigurationTestBean;
-import com.inglourious.overextension.config.SpringOverextendConfiguration;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = {SpringOverextendConfiguration.class})
+@ContextConfiguration(classes = {TestSpringOverextendConfiguration.class})
 public class SpringOverextendAnnotationApplicationTests {
 
     @Autowired
