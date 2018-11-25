@@ -12,7 +12,6 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.annotation.ScannedGenericBeanDefinition;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,16 +22,19 @@ import static org.springframework.util.StringUtils.isEmpty;
 /**
  * Created by gbrescia on 26/03/2018.
  */
-@Component
 public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactoryPostProcessor {
 
     private final Log logger = LogFactory.getLog(ExtensionBeanDefinitionRegistryPostProcessor.class);
+    private final BeanNameResolver beanNameResolver;
+
+    public ExtensionBeanDefinitionRegistryPostProcessor(BeanNameResolver beanNameResolver) {
+        this.beanNameResolver = beanNameResolver;
+    }
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
         List<ReplacerKeyRegistry> addInMapRegistry = new ArrayList<>();
 
-        BeanNameResolver beanNameResolver = new BeanNameResolver();
 
         for (String beanDefinitionName : configurableListableBeanFactory.getBeanDefinitionNames()) {
 
