@@ -55,7 +55,7 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
                         throw new BeanCreationException("Bean " + beanNameOfChildren + " annotated with OverExtension must extend a superclass");
                     }
 
-                    String[] beanNamesForType = beanNamesRetriever.from(beanChildrenResult.getMetadata(), configurableListableBeanFactory);
+                    String[] beanNamesForType = beanNamesRetriever.from(beanChildrenResult.getMetadata());
 
                     if (beanNamesForType == null) {
                         throw new BeanCreationException("Bean " + beanNameOfChildren + " must extends a spring bean component or specify extendBeanId , doesn't exist a spring bean for the class " + superClassName + " ");

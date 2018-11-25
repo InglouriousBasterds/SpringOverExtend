@@ -8,13 +8,18 @@ import java.util.Map;
 
 public class BeanNamesRetriever {
 
-    public String[] from(AnnotationMetadata metadata,
-                         ConfigurableListableBeanFactory configurableListableBeanFactory) throws ClassNotFoundException {
+    private ConfigurableListableBeanFactory configurableListableBeanFactory;
+
+    public BeanNamesRetriever(ConfigurableListableBeanFactory configurableListableBeanFactory) {
+        this.configurableListableBeanFactory = configurableListableBeanFactory;
+    }
+
+    public String[] from(AnnotationMetadata metadata) throws ClassNotFoundException {
 
         Object extendBeanId = getExtendBeanIdAttribute(metadata);
 
         return isValid(extendBeanId) ? new String[]{extendBeanId.toString()} :
-                getBeanNamesForTypeFor(metadata.getSuperClassName(), configurableListableBeanFactory);
+                getBeanNamesForTypeFor(metadata.getSuperClassName(), this.configurableListableBeanFactory);
     }
 
     private Object getExtendBeanIdAttribute(AnnotationMetadata metadata) {
@@ -29,6 +34,6 @@ public class BeanNamesRetriever {
 
     private String[] getBeanNamesForTypeFor(String superClassName,
                                             ConfigurableListableBeanFactory configurableListableBeanFactory) throws ClassNotFoundException {
-        return configurableListableBeanFactory.getBeanNamesForType(Class.forName(superClassName));
+        return this.configurableListableBeanFactory.getBeanNamesForType(Class.forName(superClassName));
     }
 }

@@ -3,6 +3,7 @@ package com.inglourious.overextension.config;
 import com.inglourious.overextension.BeanNamesRetriever;
 import com.inglourious.overextension.ExtensionBeanDefinitionRegistryPostProcessor;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,8 +14,8 @@ import org.springframework.context.annotation.Configuration;
 public class SpringOverextendConfiguration {
 
     @Bean
-    public BeanNamesRetriever beanNameResolver() {
-        return new BeanNamesRetriever();
+    public BeanNamesRetriever beanNameResolver(ConfigurableListableBeanFactory configurableListableBeanFactory) {
+        return new BeanNamesRetriever(configurableListableBeanFactory);
     }
 
     @Bean
