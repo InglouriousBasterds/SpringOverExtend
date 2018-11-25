@@ -27,7 +27,8 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
     private final BeanNamesRetriever beanNamesRetriever;
     private final BeanRedefinitionRegistry beanRedefinitionRegistry;
 
-    public ExtensionBeanDefinitionRegistryPostProcessor(BeanNamesRetriever beanNamesRetriever, BeanRedefinitionRegistry beanRedefinitionRegistry) {
+    public ExtensionBeanDefinitionRegistryPostProcessor(BeanNamesRetriever beanNamesRetriever,
+                                                        BeanRedefinitionRegistry beanRedefinitionRegistry) {
         this.beanNamesRetriever = beanNamesRetriever;
         this.beanRedefinitionRegistry = beanRedefinitionRegistry;
     }
@@ -70,10 +71,8 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
             }
         }
 
-        if (addInMapRegistry.size() > 0) {
-            for (ReplacerKeyRegistry replacerKeyRegistry : addInMapRegistry) {
-                beanRedefinitionRegistry.remappingRegistry(replacerKeyRegistry);
-            }
+        for (ReplacerKeyRegistry replacerKeyRegistry : addInMapRegistry) {
+            beanRedefinitionRegistry.remappingRegistry(replacerKeyRegistry);
         }
     }
 
@@ -86,7 +85,6 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
         return configurableListableBeanFactory.findAnnotationOnBean(beanDefinitionName, OverExtension.class) != null;
     }
 
-
     private class ParentBean {
         private final String name;
         private final BeanDefinition definition;
@@ -96,19 +94,19 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
             this.definition = definition;
         }
 
-        public String getName() {
+        String getName() {
             return name;
         }
 
-        public BeanDefinition getDefinition() {
+        BeanDefinition getDefinition() {
             return definition;
         }
 
-        public boolean hasValidName() {
+        boolean hasValidName() {
             return name != null && !name.isEmpty();
         }
 
-        public boolean isSubClassOf(String className) {
+        boolean isSubClassOf(String className) {
             return className.equalsIgnoreCase(definition.getBeanClassName())
                     || isAssignableTo(className);
         }
