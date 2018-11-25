@@ -28,9 +28,11 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
 
     private final Log logger = LogFactory.getLog(ExtensionBeanDefinitionRegistryPostProcessor.class);
     private final BeanNamesRetriever beanNamesRetriever;
+    private final RegistryRemapping registryRemapping;
 
-    public ExtensionBeanDefinitionRegistryPostProcessor(BeanNamesRetriever beanNamesRetriever) {
+    public ExtensionBeanDefinitionRegistryPostProcessor(BeanNamesRetriever beanNamesRetriever, RegistryRemapping registryRemapping) {
         this.beanNamesRetriever = beanNamesRetriever;
+        this.registryRemapping = registryRemapping;
     }
 
     @Override
@@ -73,11 +75,7 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
 
         if (addInMapRegistry.size() > 0) {
             for (ReplacerKeyRegistry replacerKeyRegistry : addInMapRegistry) {
-                remappingRegistry((BeanDefinitionRegistry) configurableListableBeanFactory,
-                        replacerKeyRegistry.getBeanNameOfChildren(),
-                        replacerKeyRegistry.getBeanChildrenResult(),
-                        replacerKeyRegistry.getBeanNameOfParent(),
-                        replacerKeyRegistry.getBeanParentDefinition());
+                registryRemapping.remappingRegistry(replacerKeyRegistry);
             }
         }
     }
@@ -91,35 +89,6 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
         return configurableListableBeanFactory.findAnnotationOnBean(beanDefinitionName, OverExtension.class) != null;
     }
 
-    private void remappingRegistry(BeanDefinitionRegistry registry,
-                                   String childBeanName,
-                                   BeanDefinition childBeanDefinition,
-                                   String parentBeanName,
-                                   BeanDefinition beanParentDefinition) {
-
-        // rimuoviamo il bean originale dal registry
-        registry.removeBeanDefinition(parentBeanName);
-
-        //Rendiamo abstract il parent
-        ((AbstractBeanDefinition) beanParentDefinition).setAbstract(true);
-
-        // rinominiamo il bean originale secondo la convenzione definita e lo salviamo nel registry
-        String newParentName = buildParentName(parentBeanName);
-        registry.registerBeanDefinition(newParentName, beanParentDefinition);
-
-        // rimuoviamo il bean originale dal registry
-        registry.removeBeanDefinition(childBeanName);
-
-        //Rendiamo abstract il parent
-        childBeanDefinition.setParentName(newParentName);
-
-        registry.registerBeanDefinition(parentBeanName, childBeanDefinition);
-    }
-
-
-    private String buildParentName(String parentName) {
-        return parentName + "_" + SUFFIX_BEAN_EXTENDED;
-    }
 
     private class ParentBean {
         private final String name;
@@ -153,6 +122,40 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
             } catch (ClassNotFoundException e) {
                 return false;
             }
+        }
+    }
+
+    public static class RegistryRemapping {
+        private BeanDefinitionRegistry configurableListableBeanFactory;
+
+        public RegistryRemapping(BeanDefinitionRegistry configurableListableBeanFactory) {
+            this.configurableListableBeanFactory = configurableListableBeanFactory;
+        }
+
+        public void remappingRegistry(ReplacerKeyRegistry replacerKeyRegistry) {
+
+            // rimuoviamo il bean originale dal registry
+            configurableListableBeanFactory.removeBeanDefinition(replacerKeyRegistry.getBeanNameOfParent());
+
+            //Rendiamo abstract il parent
+            ((AbstractBeanDefinition) replacerKeyRegistry.getBeanParentDefinition()).setAbstract(true);
+
+            // rinominiamo il bean originale secondo la convenzione definita e lo salviamo nel registry
+            String newParentName = buildParentName(replacerKeyRegistry.getBeanNameOfParent());
+            configurableListableBeanFactory.registerBeanDefinition(newParentName, replacerKeyRegistry.getBeanParentDefinition());
+
+            // rimuoviamo il bean originale dal registry
+            configurableListableBeanFactory.removeBeanDefinition(replacerKeyRegistry.getBeanNameOfChildren());
+
+            //Rendiamo abstract il parent
+            replacerKeyRegistry.getBeanChildrenResult().setParentName(newParentName);
+
+            configurableListableBeanFactory.registerBeanDefinition(replacerKeyRegistry.getBeanNameOfParent(), replacerKeyRegistry.getBeanChildrenResult());
+        }
+
+
+        private String buildParentName(String parentName) {
+            return parentName + "_" + SUFFIX_BEAN_EXTENDED;
         }
     }
 }
