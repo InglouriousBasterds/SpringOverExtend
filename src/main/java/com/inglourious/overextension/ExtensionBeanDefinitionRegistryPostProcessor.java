@@ -65,12 +65,10 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
                             .filter(pb -> pb.isAssignableTo(superClassName))
                             .findFirst();
 
+                    ReplacerKeyRegistry replacerKeyRegistry = parentBean.map(pb -> new ReplacerKeyRegistry(beanDefinitionName, beanDefinition, pb.getName(), pb.getDefinition()))
+                            .orElseThrow(() -> new BeanCreationException("Bean " + beanDefinitionName + " must extends a unique spring bean component  or specify extendBeanId. Invalid superClass " + superClassName + " (" + parentBeanNames.toString() + ")"));
 
-                    if (parentBean.isPresent()) {
-                        addInMapRegistry.add(new ReplacerKeyRegistry(beanDefinitionName, beanDefinition, parentBean.get().getName(), parentBean.get().getDefinition()));
-                    } else {
-                        throw new BeanCreationException("Bean " + beanDefinitionName + " must extends a unique spring bean component  or specify extendBeanId. Invalid superClass " + superClassName + " (" + parentBeanNames.toString() + ")");
-                    }
+                    addInMapRegistry.add(replacerKeyRegistry);
                 }
             } catch (ClassNotFoundException e) {
                 logger.error("", e);
