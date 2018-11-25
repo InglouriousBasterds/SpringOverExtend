@@ -2,20 +2,19 @@ package com.inglourious.overextension;
 
 import com.inglourious.overextension.annotation.OverExtension;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.context.annotation.ScannedGenericBeanDefinition;
 import org.springframework.core.type.AnnotationMetadata;
 
 import java.util.Map;
 
 public class BeanNameResolver {
 
-    public String[] getBeanNamesForType(ScannedGenericBeanDefinition beanChildrenResult,
+    public String[] getBeanNamesForType(AnnotationMetadata metadata,
                                         ConfigurableListableBeanFactory configurableListableBeanFactory) throws ClassNotFoundException {
 
-        Object extendBeanId = getExtendBeanIdAttribute(beanChildrenResult.getMetadata());
+        Object extendBeanId = getExtendBeanIdAttribute(metadata);
 
         return isValid(extendBeanId) ? new String[]{extendBeanId.toString()} :
-                getBeanNamesForTypeFor(beanChildrenResult.getMetadata(), configurableListableBeanFactory);
+                getBeanNamesForTypeFor(metadata.getSuperClassName(), configurableListableBeanFactory);
     }
 
     private Object getExtendBeanIdAttribute(AnnotationMetadata metadata) {
@@ -28,7 +27,8 @@ public class BeanNameResolver {
         return extendBeanId != null && !"".equalsIgnoreCase(extendBeanId.toString());
     }
 
-    private String[] getBeanNamesForTypeFor(AnnotationMetadata metadata, ConfigurableListableBeanFactory configurableListableBeanFactory) throws ClassNotFoundException {
-        return configurableListableBeanFactory.getBeanNamesForType(Class.forName(metadata.getSuperClassName()));
+    private String[] getBeanNamesForTypeFor(String superClassName,
+                                            ConfigurableListableBeanFactory configurableListableBeanFactory) throws ClassNotFoundException {
+        return configurableListableBeanFactory.getBeanNamesForType(Class.forName(superClassName));
     }
 }
