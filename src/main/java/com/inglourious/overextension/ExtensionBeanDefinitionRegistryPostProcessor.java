@@ -16,7 +16,6 @@ import org.springframework.context.annotation.ScannedGenericBeanDefinition;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static com.inglourious.overextension.ExtensionBeanDefinitionDecorator.SUFFIX_BEAN_EXTENDED;
 import static java.lang.Class.forName;
@@ -53,13 +52,10 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
                         throw new BeanCreationException("Bean " + beanDefinitionName + " annotated with OverExtension must extend a superclass");
                     }
 
-                    String[] parentBeanNames = beanNamesRetriever.from(beanDefinition.getMetadata());
+                    List<String> parentBeanNames = beanNamesRetriever.from(beanDefinition.getMetadata())
+                            .orElseThrow(() -> new BeanCreationException("Bean " + beanDefinitionName + " must extends a spring bean component or specify extendBeanId , doesn't exist a spring bean for the class " + superClassName + " "));
 
-                    if (parentBeanNames == null) {
-                        throw new BeanCreationException("Bean " + beanDefinitionName + " must extends a spring bean component or specify extendBeanId , doesn't exist a spring bean for the class " + superClassName + " ");
-                    }
-
-                    Optional<ParentBean> parentBean = Stream.of(parentBeanNames)
+                    Optional<ParentBean> parentBean = parentBeanNames.stream()
                             .map(parentBeanName -> new ParentBean(parentBeanName, configurableListableBeanFactory.getBeanDefinition(parentBeanName)))
                             .filter(ParentBean::hasValidName)
                             .filter(pb -> pb.isAssignableTo(superClassName))
@@ -70,8 +66,6 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
 
                     addInMapRegistry.add(replacerKeyRegistry);
                 }
-            } catch (ClassNotFoundException e) {
-                logger.error("", e);
             } catch (BeanCreationException be) {
                 logger.error("Bean Creation error on OverExtension", be);
             }

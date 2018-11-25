@@ -4,7 +4,12 @@ import com.inglourious.overextension.annotation.OverExtension;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.core.type.AnnotationMetadata;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
+import static java.util.Arrays.asList;
+import static java.util.Optional.of;
 
 public class BeanNamesRetriever {
 
@@ -14,11 +19,11 @@ public class BeanNamesRetriever {
         this.configurableListableBeanFactory = configurableListableBeanFactory;
     }
 
-    public String[] from(AnnotationMetadata metadata) throws ClassNotFoundException {
+    public Optional<List<String>> from(AnnotationMetadata metadata) {
 
         Object extendBeanId = getExtendBeanIdAttribute(metadata);
 
-        return isValid(extendBeanId) ? new String[]{extendBeanId.toString()} :
+        return isValid(extendBeanId) ? of(asList(extendBeanId.toString())) :
                 getBeanNamesForTypeFor(metadata.getSuperClassName());
     }
 
@@ -32,7 +37,11 @@ public class BeanNamesRetriever {
         return extendBeanId != null && !"".equalsIgnoreCase(extendBeanId.toString());
     }
 
-    private String[] getBeanNamesForTypeFor(String superClassName) throws ClassNotFoundException {
-        return this.configurableListableBeanFactory.getBeanNamesForType(Class.forName(superClassName));
+    private Optional<List<String>> getBeanNamesForTypeFor(String superClassName) {
+        try {
+            return of(asList(this.configurableListableBeanFactory.getBeanNamesForType(Class.forName(superClassName))));
+        } catch (ClassNotFoundException e) {
+            return Optional.empty();
+        }
     }
 }
