@@ -8,24 +8,20 @@ import java.util.Map;
 
 public class BeanNameResolver {
 
-    private ConfigurableListableBeanFactory configurableListableBeanFactory;
 
-    public BeanNameResolver(ConfigurableListableBeanFactory configurableListableBeanFactory) {
-        this.configurableListableBeanFactory = configurableListableBeanFactory;
-    }
 
     public String[] getBeanNamesForType(ScannedGenericBeanDefinition beanChildrenResult,
-                                        String superClassName) throws ClassNotFoundException {
+                                        String superClassName, ConfigurableListableBeanFactory configurableListableBeanFactory1) throws ClassNotFoundException {
 
         Object extendBeanId = getExtendBeanIdAttribute(beanChildrenResult);
 
         return isValid(extendBeanId) ? new String[]{extendBeanId.toString()} :
-                getBeanNamesForTypeFor(superClassName);
+                getBeanNamesForTypeFor(superClassName, configurableListableBeanFactory1);
     }
 
 
-    private String[] getBeanNamesForTypeFor(String superClassName) throws ClassNotFoundException {
-        return this.configurableListableBeanFactory.getBeanNamesForType(Class.forName(superClassName));
+    private String[] getBeanNamesForTypeFor(String superClassName, ConfigurableListableBeanFactory configurableListableBeanFactory1) throws ClassNotFoundException {
+        return configurableListableBeanFactory1.getBeanNamesForType(Class.forName(superClassName));
     }
 
     private boolean isValid(Object extendBeanId) {

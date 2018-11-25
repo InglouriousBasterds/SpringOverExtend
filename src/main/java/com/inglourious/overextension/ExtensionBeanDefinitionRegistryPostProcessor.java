@@ -32,7 +32,7 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
     public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
         List<ReplacerKeyRegistry> addInMapRegistry = new ArrayList<>();
 
-        BeanNameResolver beanNameResolver = new BeanNameResolver(configurableListableBeanFactory);
+        BeanNameResolver beanNameResolver = new BeanNameResolver();
 
         for (String beanDefinitionName : configurableListableBeanFactory.getBeanDefinitionNames()) {
 
@@ -53,7 +53,7 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
                         throw new BeanCreationException("Bean " + beanNameOfChildren + " annotated with OverExtension must extend a superclass");
                     }
 
-                    String[] beanNamesForType = beanNameResolver.getBeanNamesForType(beanChildrenResult, superClassName);
+                    String[] beanNamesForType = beanNameResolver.getBeanNamesForType(beanChildrenResult, superClassName, configurableListableBeanFactory);
 
                     if (beanNamesForType == null) {
                         throw new BeanCreationException("Bean " + beanNameOfChildren + " must extends a spring bean component or specify extendBeanId , doesn't exist a spring bean for the class " + superClassName + " ");
