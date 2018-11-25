@@ -6,10 +6,10 @@ import org.springframework.core.type.AnnotationMetadata;
 
 import java.util.Map;
 
-public class BeanNameResolver {
+public class BeanNamesRetriever {
 
-    public String[] getBeanNamesForType(AnnotationMetadata metadata,
-                                        ConfigurableListableBeanFactory configurableListableBeanFactory) throws ClassNotFoundException {
+    public String[] from(AnnotationMetadata metadata,
+                         ConfigurableListableBeanFactory configurableListableBeanFactory) throws ClassNotFoundException {
 
         Object extendBeanId = getExtendBeanIdAttribute(metadata);
 

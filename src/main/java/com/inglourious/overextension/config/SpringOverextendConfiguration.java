@@ -1,6 +1,6 @@
 package com.inglourious.overextension.config;
 
-import com.inglourious.overextension.BeanNameResolver;
+import com.inglourious.overextension.BeanNamesRetriever;
 import com.inglourious.overextension.ExtensionBeanDefinitionRegistryPostProcessor;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.context.annotation.Bean;
@@ -13,13 +13,13 @@ import org.springframework.context.annotation.Configuration;
 public class SpringOverextendConfiguration {
 
     @Bean
-    public BeanNameResolver beanNameResolver() {
-        return new BeanNameResolver();
+    public BeanNamesRetriever beanNameResolver() {
+        return new BeanNamesRetriever();
     }
 
     @Bean
-    public BeanFactoryPostProcessor extensionBeanDefinitionRegistryPostProcessor(BeanNameResolver beanNameResolver) {
-        return new ExtensionBeanDefinitionRegistryPostProcessor(beanNameResolver);
+    public BeanFactoryPostProcessor extensionBeanDefinitionRegistryPostProcessor(BeanNamesRetriever beanNamesRetriever) {
+        return new ExtensionBeanDefinitionRegistryPostProcessor(beanNamesRetriever);
     }
 
 

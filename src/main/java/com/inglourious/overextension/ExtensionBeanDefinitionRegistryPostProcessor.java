@@ -25,10 +25,10 @@ import static org.springframework.util.StringUtils.isEmpty;
 public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactoryPostProcessor {
 
     private final Log logger = LogFactory.getLog(ExtensionBeanDefinitionRegistryPostProcessor.class);
-    private final BeanNameResolver beanNameResolver;
+    private final BeanNamesRetriever beanNamesRetriever;
 
-    public ExtensionBeanDefinitionRegistryPostProcessor(BeanNameResolver beanNameResolver) {
-        this.beanNameResolver = beanNameResolver;
+    public ExtensionBeanDefinitionRegistryPostProcessor(BeanNamesRetriever beanNamesRetriever) {
+        this.beanNamesRetriever = beanNamesRetriever;
     }
 
     @Override
@@ -55,7 +55,7 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
                         throw new BeanCreationException("Bean " + beanNameOfChildren + " annotated with OverExtension must extend a superclass");
                     }
 
-                    String[] beanNamesForType = beanNameResolver.getBeanNamesForType(beanChildrenResult.getMetadata(), configurableListableBeanFactory);
+                    String[] beanNamesForType = beanNamesRetriever.from(beanChildrenResult.getMetadata(), configurableListableBeanFactory);
 
                     if (beanNamesForType == null) {
                         throw new BeanCreationException("Bean " + beanNameOfChildren + " must extends a spring bean component or specify extendBeanId , doesn't exist a spring bean for the class " + superClassName + " ");
