@@ -1,4 +1,4 @@
-package com.inglourious.overextension.bean;
+package com.inglourious.overextension.annotation;
 
 import org.springframework.beans.factory.config.BeanDefinition;
 

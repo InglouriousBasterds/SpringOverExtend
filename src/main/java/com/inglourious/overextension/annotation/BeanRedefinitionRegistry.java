@@ -1,10 +1,9 @@
-package com.inglourious.overextension;
+package com.inglourious.overextension.annotation;
 
-import com.inglourious.overextension.bean.ReplacerKeyRegistry;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 
-import static com.inglourious.overextension.ExtensionBeanDefinitionDecorator.SUFFIX_BEAN_EXTENDED;
+import static com.inglourious.overextension.annotation.ExtensionBeanDefinitionDecorator.SUFFIX_BEAN_EXTENDED;
 
 public class BeanRedefinitionRegistry {
 

@@ -1,8 +1,8 @@
 package com.inglourious.overextension.config;
 
-import com.inglourious.overextension.BeanRedefinitionRegistry;
-import com.inglourious.overextension.ExtensionBeanDefinitionRegistryPostProcessor;
-import com.inglourious.overextension.ParentBeanNamesRetriever;
+import com.inglourious.overextension.annotation.BeanRedefinitionRegistry;
+import com.inglourious.overextension.annotation.ExtensionBeanDefinitionRegistryPostProcessor;
+import com.inglourious.overextension.xml.ParentBeanNamesRetriever;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;

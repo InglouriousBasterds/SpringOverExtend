@@ -1,1 +1,1 @@
-http\://www.inglourious.com/schema/spring/ExtensionSchema=com.inglourious.overextension.ExtensionNamespaceHandler
+http\://www.inglourious.com/schema/spring/ExtensionSchema=com.inglourious.overextension.xml.ExtensionNamespaceHandler

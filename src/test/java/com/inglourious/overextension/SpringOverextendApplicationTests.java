@@ -1,5 +1,6 @@
 package com.inglourious.overextension;
 
+import com.inglourious.overextension.annotation.ExtensionBeanDefinitionDecorator;
 import com.inglourious.overextension.bean.BeanParentMock;
 import com.inglourious.overextension.bean.BeanProductMock;
 import com.inglourious.overextension.bean.BeanWithReferenceMock;

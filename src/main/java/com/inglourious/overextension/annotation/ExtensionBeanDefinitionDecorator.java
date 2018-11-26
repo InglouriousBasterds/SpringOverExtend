@@ -1,4 +1,4 @@
-package com.inglourious.overextension;
+package com.inglourious.overextension.annotation;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

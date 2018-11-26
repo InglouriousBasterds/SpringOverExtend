@@ -1,5 +1,6 @@
-package com.inglourious.overextension;
+package com.inglourious.overextension.xml;
 
+import com.inglourious.overextension.annotation.ExtensionBeanDefinitionDecorator;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 
 /**
