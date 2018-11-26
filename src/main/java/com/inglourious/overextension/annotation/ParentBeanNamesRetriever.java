@@ -1,6 +1,5 @@
-package com.inglourious.overextension.xml;
+package com.inglourious.overextension.annotation;
 
-import com.inglourious.overextension.annotation.OverExtension;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.core.type.AnnotationMetadata;
 

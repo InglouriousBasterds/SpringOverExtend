@@ -3,7 +3,7 @@ package com.inglourious.overextension.annotation;
 import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 
-import static com.inglourious.overextension.annotation.ExtensionBeanDefinitionDecorator.SUFFIX_BEAN_EXTENDED;
+import static com.inglourious.overextension.xml.ExtensionBeanDefinitionDecorator.SUFFIX_BEAN_EXTENDED;
 
 public class BeanRedefinitionRegistry {
 
