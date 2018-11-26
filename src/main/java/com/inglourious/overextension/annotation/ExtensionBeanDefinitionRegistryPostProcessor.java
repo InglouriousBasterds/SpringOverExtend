@@ -11,7 +11,6 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.annotation.ScannedGenericBeanDefinition;
 import org.springframework.core.type.AnnotationMetadata;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,8 +36,6 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
 
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
-        List<ReplacerKeyRegistry> addInMapRegistry = new ArrayList<>();
-
 
         for (String beanDefinitionName : configurableListableBeanFactory.getBeanDefinitionNames()) {
 
@@ -63,15 +60,11 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
                     ReplacerKeyRegistry replacerKeyRegistry = parentBean.map(pb -> new ReplacerKeyRegistry(annotatedBean.name(), annotatedBean.definition(), pb.name(), pb.definition()))
                             .orElseThrow(() -> new BeanCreationException("Bean " + annotatedBean.name() + " must extends a unique spring bean component  or specify extendBeanId. Invalid superClass " + superClassName + " (" + parentBeanNames.toString() + ")"));
 
-                    addInMapRegistry.add(replacerKeyRegistry);
+                    beanRedefinitionRegistry.remappingRegistry(replacerKeyRegistry);
                 }
             } catch (BeanCreationException be) {
                 logger.error("Bean Creation error on OverExtension", be);
             }
-        }
-
-        for (ReplacerKeyRegistry replacerKeyRegistry : addInMapRegistry) {
-            beanRedefinitionRegistry.remappingRegistry(replacerKeyRegistry);
         }
     }
 
