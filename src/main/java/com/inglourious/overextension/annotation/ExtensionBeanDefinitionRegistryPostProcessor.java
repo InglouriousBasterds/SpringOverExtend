@@ -46,10 +46,10 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
                     AnnotatedBean annotatedBean = new AnnotatedBean(beanDefinitionName, (ScannedGenericBeanDefinition) configurableListableBeanFactory.getBeanDefinition(beanDefinitionName));
 
                     String superClassName = annotatedBean.getSuperClassName()
-                            .orElseThrow(() -> new BeanCreationException("Bean " + annotatedBean.name() + " annotated with OverExtension must extend a superclass"));
+                            .orElseThrow(() -> new MissingExtensionBeanException(annotatedBean));
 
                     List<String> parentBeanNames = parentBeanNamesRetriever.from(annotatedBean.metadata())
-                            .orElseThrow(() -> new BeanCreationException("Bean " + annotatedBean.name() + " must extends a spring bean component or specify extendBeanId , doesn't exist a spring bean for the class " + superClassName + " "));
+                            .orElseThrow(() -> new NotExistingExtendedBeanException(annotatedBean, superClassName));
 
                     Optional<ParentBean> parentBean = parentBeanNames.stream()
                             .map(name -> new ParentBean(name, configurableListableBeanFactory.getBeanDefinition(name)))
@@ -58,13 +58,31 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
                             .findFirst();
 
                     ReplacerKeyRegistry replacerKeyRegistry = parentBean.map(pb -> new ReplacerKeyRegistry(annotatedBean.name(), annotatedBean.definition(), pb.name(), pb.definition()))
-                            .orElseThrow(() -> new BeanCreationException("Bean " + annotatedBean.name() + " must extends a unique spring bean component  or specify extendBeanId. Invalid superClass " + superClassName + " (" + parentBeanNames.toString() + ")"));
+                            .orElseThrow(() -> new InvalidSuperClassBeanException(annotatedBean, superClassName, parentBeanNames));
 
                     beanRedefinitionRegistry.remappingRegistry(replacerKeyRegistry);
                 }
             } catch (BeanCreationException be) {
                 logger.error("Bean Creation error on OverExtension", be);
             }
+        }
+    }
+
+    private class MissingExtensionBeanException extends BeanCreationException {
+        public MissingExtensionBeanException(AnnotatedBean annotatedBean) {
+            super("Bean " + annotatedBean.name() + " annotated with OverExtension must extend a superclass");
+        }
+    }
+
+    private class NotExistingExtendedBeanException extends BeanCreationException {
+        public NotExistingExtendedBeanException(AnnotatedBean annotatedBean, String superClassName) {
+            super("Bean " + annotatedBean.name() + " must extends a spring bean component or specify extendBeanId , doesn't exist a spring bean for the class " + superClassName + " ");
+        }
+    }
+
+    private class InvalidSuperClassBeanException extends BeanCreationException {
+        public InvalidSuperClassBeanException(AnnotatedBean annotatedBean, String superClassName, List<String> parentBeanNames) {
+            super("Bean " + annotatedBean.name() + " must extends a unique spring bean component or specify extendBeanId. Invalid superClass " + superClassName + " (" + parentBeanNames.toString() + ")");
         }
     }
 
