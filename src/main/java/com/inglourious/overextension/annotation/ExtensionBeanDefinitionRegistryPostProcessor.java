@@ -45,7 +45,7 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
 
                     AnnotatedBean annotatedBean = new AnnotatedBean(beanDefinitionName, (ScannedGenericBeanDefinition) configurableListableBeanFactory.getBeanDefinition(beanDefinitionName));
 
-                    String superClassName = annotatedBean.getSuperClassName()
+                    String superClassName = annotatedBean.superClassName()
                             .orElseThrow(() -> new MissingExtensionBeanException(annotatedBean));
 
                     List<String> parentBeanNames = parentBeanNamesRetriever.from(annotatedBean.metadata())
@@ -57,7 +57,7 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
                             .filter(pb -> pb.isSubClassOf(superClassName))
                             .findFirst();
 
-                    ReplacerKeyRegistry replacerKeyRegistry = parentBean.map(pb -> new ReplacerKeyRegistry(annotatedBean.name(), annotatedBean.definition(), pb.name(), pb.definition()))
+                    ReplacerKeyRegistry replacerKeyRegistry = parentBean.map(pb -> new ReplacerKeyRegistry(annotatedBean, pb))
                             .orElseThrow(() -> new InvalidSuperClassBeanException(annotatedBean, superClassName, parentBeanNames));
 
                     beanRedefinitionRegistry.remappingRegistry(replacerKeyRegistry);
@@ -90,7 +90,7 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
         return configurableListableBeanFactory.findAnnotationOnBean(beanDefinitionName, OverExtension.class) != null;
     }
 
-    private class AnnotatedBean {
+    class AnnotatedBean {
 
         private final String name;
         private final AnnotatedBeanDefinition definition;
@@ -100,7 +100,7 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
             this.definition = definition;
         }
 
-        Optional<String> getSuperClassName() {
+        Optional<String> superClassName() {
             String superClassName = definition.getMetadata().getSuperClassName();
             return isEmpty(superClassName) || isObjectClass(superClassName) ? empty() :
                     of(superClassName);
@@ -124,7 +124,7 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
         }
     }
 
-    private class ParentBean {
+    class ParentBean {
         private final String name;
         private final BeanDefinition definition;
 

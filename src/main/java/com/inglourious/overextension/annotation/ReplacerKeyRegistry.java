@@ -1,5 +1,7 @@
 package com.inglourious.overextension.annotation;
 
+import com.inglourious.overextension.annotation.ExtensionBeanDefinitionRegistryPostProcessor.AnnotatedBean;
+import com.inglourious.overextension.annotation.ExtensionBeanDefinitionRegistryPostProcessor.ParentBean;
 import org.springframework.beans.factory.config.BeanDefinition;
 
 /**
@@ -7,34 +9,27 @@ import org.springframework.beans.factory.config.BeanDefinition;
  */
 public class ReplacerKeyRegistry {
 
-    private final String childBeanName;
-    private final BeanDefinition childBeanResult;
-    private final String parentBeanName;
-    private final BeanDefinition parentBeanDefinition;
+    private AnnotatedBean childBean;
+    private ParentBean parentBean;
 
-    public ReplacerKeyRegistry(String childBeanName,
-                               BeanDefinition beanChildrenResult,
-                               String parentBeanName,
-                               BeanDefinition parentBeanDefinition) {
-        this.childBeanName = childBeanName;
-        this.childBeanResult = beanChildrenResult;
-        this.parentBeanName = parentBeanName;
-        this.parentBeanDefinition = parentBeanDefinition;
+    public ReplacerKeyRegistry(AnnotatedBean childBean, ParentBean parentBean) {
+        this.childBean = childBean;
+        this.parentBean = parentBean;
     }
 
-    public String getBeanNameOfChildren() {
-        return childBeanName;
+    public String childBeanName() {
+        return childBean.name();
     }
 
-    public BeanDefinition getBeanChildrenResult() {
-        return childBeanResult;
+    public BeanDefinition childBeanDefinition() {
+        return childBean.definition();
     }
 
-    public String getBeanNameOfParent() {
-        return parentBeanName;
+    public String parentBeanName() {
+        return parentBean.name();
     }
 
-    public BeanDefinition getBeanParentDefinition() {
-        return parentBeanDefinition;
+    public BeanDefinition parentBeanDefinition() {
+        return parentBean.definition();
     }
 }
