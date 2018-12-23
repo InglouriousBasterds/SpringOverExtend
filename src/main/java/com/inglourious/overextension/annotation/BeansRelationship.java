@@ -1,7 +1,5 @@
 package com.inglourious.overextension.annotation;
 
-import com.inglourious.overextension.annotation.ExtensionBeanDefinitionRegistryPostProcessor.AnnotatedBean;
-import com.inglourious.overextension.annotation.ExtensionBeanDefinitionRegistryPostProcessor.ParentBean;
 import org.springframework.beans.factory.config.BeanDefinition;
 
 /**
