@@ -7,12 +7,12 @@ import org.springframework.beans.factory.config.BeanDefinition;
 /**
  * Created by gbrescia on 27/03/2018.
  */
-public class ReplacerKeyRegistry {
+public class BeansRelationship {
 
     private AnnotatedBean childBean;
     private ParentBean parentBean;
 
-    public ReplacerKeyRegistry(AnnotatedBean childBean, ParentBean parentBean) {
+    public BeansRelationship(AnnotatedBean childBean, ParentBean parentBean) {
         this.childBean = childBean;
         this.parentBean = parentBean;
     }

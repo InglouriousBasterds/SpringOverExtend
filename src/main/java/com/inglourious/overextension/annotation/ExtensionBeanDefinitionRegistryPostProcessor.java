@@ -57,10 +57,10 @@ public class ExtensionBeanDefinitionRegistryPostProcessor implements BeanFactory
                             .filter(pb -> pb.isSubClassOf(superClassName))
                             .findFirst();
 
-                    ReplacerKeyRegistry replacerKeyRegistry = parentBean.map(pb -> new ReplacerKeyRegistry(annotatedBean, pb))
+                    BeansRelationship beansRelationship = parentBean.map(pb -> new BeansRelationship(annotatedBean, pb))
                             .orElseThrow(() -> new InvalidSuperClassBeanException(annotatedBean, superClassName, parentBeanNames));
 
-                    beanRedefinitionRegistry.remappingRegistry(replacerKeyRegistry);
+                    beanRedefinitionRegistry.remappingRegistry(beansRelationship);
                 }
             } catch (BeanCreationException be) {
                 logger.error("Bean Creation error on OverExtension", be);

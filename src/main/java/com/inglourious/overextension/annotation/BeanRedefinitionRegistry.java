@@ -13,25 +13,25 @@ public class BeanRedefinitionRegistry {
         this.beanDefinitionRegistry = beanDefinitionRegistry;
     }
 
-    public void remappingRegistry(ReplacerKeyRegistry replacerKeyRegistry) {
+    public void remappingRegistry(BeansRelationship beansRelationship) {
 
         // rimuoviamo il bean originale dal registry
-        beanDefinitionRegistry.removeBeanDefinition(replacerKeyRegistry.parentBeanName());
+        beanDefinitionRegistry.removeBeanDefinition(beansRelationship.parentBeanName());
 
         //Rendiamo abstract il parent
-        ((AbstractBeanDefinition) replacerKeyRegistry.parentBeanDefinition()).setAbstract(true);
+        ((AbstractBeanDefinition) beansRelationship.parentBeanDefinition()).setAbstract(true);
 
         // rinominiamo il bean originale secondo la convenzione definita e lo salviamo nel registry
-        String newParentName = buildParentName(replacerKeyRegistry.parentBeanName());
-        beanDefinitionRegistry.registerBeanDefinition(newParentName, replacerKeyRegistry.parentBeanDefinition());
+        String newParentName = buildParentName(beansRelationship.parentBeanName());
+        beanDefinitionRegistry.registerBeanDefinition(newParentName, beansRelationship.parentBeanDefinition());
 
         // rimuoviamo il bean originale dal registry
-        beanDefinitionRegistry.removeBeanDefinition(replacerKeyRegistry.childBeanName());
+        beanDefinitionRegistry.removeBeanDefinition(beansRelationship.childBeanName());
 
         //Rendiamo abstract il parent
-        replacerKeyRegistry.childBeanDefinition().setParentName(newParentName);
+        beansRelationship.childBeanDefinition().setParentName(newParentName);
 
-        beanDefinitionRegistry.registerBeanDefinition(replacerKeyRegistry.parentBeanName(), replacerKeyRegistry.childBeanDefinition());
+        beanDefinitionRegistry.registerBeanDefinition(beansRelationship.parentBeanName(), beansRelationship.childBeanDefinition());
     }
 
     private String buildParentName(String parentName) {
