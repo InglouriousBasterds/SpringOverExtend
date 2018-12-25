@@ -19,7 +19,7 @@ This library is tested and works with Spring 5
 Concept example for XML configuration:
 Main spring beans file (file master) in a context of a dependency library:
 ```
-<bean id="beanA" class="com.inglourious.overextension.bean.BeanProductMock">
+<bean id="beanA" class="com.inglourious.overextension.fixture.bean.BeanProductMock">
     <property name="a" value="A main value"/>
     <property name="b" value="B main value"/>
 </bean>
@@ -27,7 +27,7 @@ Main spring beans file (file master) in a context of a dependency library:
 
 Project spring file (file slave) in a project that wants to override some method of the parent without change the parent bean id but inhering his properties and functions
 ```
-<bean id="beanA" class="com.inglourious.overextension.bean.BeanChildrenMock"  over:extension="abstract">
+<bean id="beanA" class="com.inglourious.overextension.fixture.bean.BeanChildrenMock"  over:extension="abstract">
     <property name="a" value="A override value"/>
     <property name="c" value="C children value"/>
 </bean>

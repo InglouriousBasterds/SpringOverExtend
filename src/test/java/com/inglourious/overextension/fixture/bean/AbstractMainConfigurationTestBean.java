@@ -1,6 +1,6 @@
-package com.inglourious.overextension.bean;
+package com.inglourious.overextension.fixture.bean;
 
-import com.inglourious.overextension.beanWithAnnotation.FinalVariable;
+import com.inglourious.overextension.fixture.beanWithAnnotation.FinalVariable;
 
 import java.util.Map;
 

@@ -1,7 +1,7 @@
-package com.inglourious.overextension.beanWithAnnotationExtendId;
+package com.inglourious.overextension.fixture.beanWithAnnotationExtendId;
 
-import com.inglourious.overextension.SpringOverextendAnnotationApplicationTests;
 import com.inglourious.overextension.annotation.OverExtension;
+import com.inglourious.overextension.annotation.SpringOverextendAnnotationApplicationTests;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor;
 

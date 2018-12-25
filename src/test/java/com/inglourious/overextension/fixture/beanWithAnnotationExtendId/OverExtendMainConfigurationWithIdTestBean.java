@@ -1,7 +1,7 @@
-package com.inglourious.overextension.beanWithAnnotationExtendId;
+package com.inglourious.overextension.fixture.beanWithAnnotationExtendId;
 
 import com.inglourious.overextension.annotation.OverExtension;
-import com.inglourious.overextension.beanWithAnnotation.FinalVariable;
+import com.inglourious.overextension.fixture.beanWithAnnotation.FinalVariable;
 
 /**
  * Created by gbrescia on 27/03/2018.

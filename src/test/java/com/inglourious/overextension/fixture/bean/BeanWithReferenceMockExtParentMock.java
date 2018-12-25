@@ -1,18 +1,19 @@
-package com.inglourious.overextension.bean;
+package com.inglourious.overextension.fixture.bean;
 
-public class BeanWithReferenceMock {
+public class BeanWithReferenceMockExtParentMock extends BeanParentMock {
+
     private String a;
     private String b;
-    private BeanProductMock mock;
+    private BeanParentMock mockParent;
 
 
-    public BeanProductMock getMock() {
-        return mock;
+    public BeanParentMock getMockParent() {
+        return mockParent;
     }
 
 
-    public void setMock(BeanProductMock mock) {
-        this.mock = mock;
+    public void setMockParent(BeanParentMock mockParent) {
+        this.mockParent = mockParent;
     }
 
 

@@ -1,9 +1,9 @@
-package com.inglourious.overextension;
+package com.inglourious.overextension.annotation;
 
-import com.inglourious.overextension.bean.AbstractMainConfigurationTestBean;
-import com.inglourious.overextension.beanWithAnnotation.FinalVariable;
-import com.inglourious.overextension.beanWithAnnotation.InjectOfMainConfigurationTestBean;
-import com.inglourious.overextension.beanWithAnnotation.MainConfigurationTestBean;
+import com.inglourious.overextension.fixture.bean.AbstractMainConfigurationTestBean;
+import com.inglourious.overextension.fixture.beanWithAnnotation.FinalVariable;
+import com.inglourious.overextension.fixture.beanWithAnnotation.InjectOfMainConfigurationTestBean;
+import com.inglourious.overextension.fixture.beanWithAnnotation.MainConfigurationTestBean;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

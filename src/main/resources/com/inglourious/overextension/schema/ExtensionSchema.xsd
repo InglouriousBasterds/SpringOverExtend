@@ -1,7 +1,8 @@
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.inglourious.com/schema/spring/ExtensionSchema"
-            targetNamespace="http://www.inglourious.com/schema/spring/ExtensionSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://www.inglourious.com/schema/spring/ExtensionSchema"
+            targetNamespace="http://www.inglourious.com/schema/spring/ExtensionSchema"
+            elementFormDefault="qualified">
 
-    <!-- support bean extension override -->
     <xsd:attribute name="extension" type="xsd:string" default="abstract"/>
 
 </xsd:schema>

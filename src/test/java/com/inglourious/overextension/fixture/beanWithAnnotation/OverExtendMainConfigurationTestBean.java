@@ -1,4 +1,4 @@
-package com.inglourious.overextension.beanWithAnnotation;
+package com.inglourious.overextension.fixture.beanWithAnnotation;
 
 import com.inglourious.overextension.annotation.OverExtension;
 

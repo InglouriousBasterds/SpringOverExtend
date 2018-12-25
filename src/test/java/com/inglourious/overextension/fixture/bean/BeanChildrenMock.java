@@ -1,4 +1,4 @@
-package com.inglourious.overextension.bean;
+package com.inglourious.overextension.fixture.bean;
 
 public class BeanChildrenMock extends BeanProductMock {
 

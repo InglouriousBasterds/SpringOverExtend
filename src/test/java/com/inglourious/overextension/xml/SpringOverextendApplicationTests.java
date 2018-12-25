@@ -1,10 +1,9 @@
-package com.inglourious.overextension;
+package com.inglourious.overextension.xml;
 
-import com.inglourious.overextension.bean.BeanParentMock;
-import com.inglourious.overextension.bean.BeanProductMock;
-import com.inglourious.overextension.bean.BeanWithReferenceMock;
-import com.inglourious.overextension.bean.BeanWithReferenceMockExtParentMock;
-import com.inglourious.overextension.xml.ExtensionBeanDefinitionDecorator;
+import com.inglourious.overextension.fixture.bean.BeanParentMock;
+import com.inglourious.overextension.fixture.bean.BeanProductMock;
+import com.inglourious.overextension.fixture.bean.BeanWithReferenceMock;
+import com.inglourious.overextension.fixture.bean.BeanWithReferenceMockExtParentMock;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

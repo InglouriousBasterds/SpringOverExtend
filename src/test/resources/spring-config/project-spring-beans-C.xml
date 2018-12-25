@@ -7,12 +7,12 @@
         http://www.inglourious.com/schema/spring/ExtensionSchema
         http://www.inglourious.com/schema/spring/ExtensionSchema.xsd" >
 
-	<bean id="BeanC_Father" class="com.inglourious.overextension.bean.BeanParentMock" over:extension="abstract" >
+	<bean id="BeanC_Father" class="com.inglourious.overextension.fixture.bean.BeanParentMock" over:extension="abstract">
 		<property name="uno" value="110"/>
 		<property name="due" value="220"/>
 	</bean>
-	
-	<bean id="BeanC_Child" class="com.inglourious.overextension.bean.BeanParentMock" over:extension="abstract">
+
+	<bean id="BeanC_Child" class="com.inglourious.overextension.fixture.bean.BeanParentMock" over:extension="abstract">
 		<property name="a" value="prop A BeanC_Child_extended"/>
 		<property name="mock" ref="BeanB" />
 	</bean>

@@ -1,4 +1,4 @@
-package com.inglourious.overextension.beanWithAnnotation;
+package com.inglourious.overextension.fixture.beanWithAnnotation;
 
 /**
  * Created by gbrescia on 26/03/2018.

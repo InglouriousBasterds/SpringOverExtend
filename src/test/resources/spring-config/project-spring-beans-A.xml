@@ -7,12 +7,13 @@
         http://www.inglourious.com/schema/spring/ExtensionSchema
         http://www.inglourious.com/schema/spring/ExtensionSchema.xsd" >
 
-	<bean id="BeanA" class="com.inglourious.overextension.bean.BeanChildrenMock" over:extension="abstract"  >
+	<bean id="BeanA" class="com.inglourious.overextension.fixture.bean.BeanChildrenMock" over:extension="abstract">
 		    	<property name="a" value="A figlio"/>
 				<property name="c" value="C figlio"/>
-    </bean>        
-            
-    <bean id="BeanTestMappa" class="com.inglourious.overextension.bean.BeanProductMock" over:extension="abstract">
+    </bean>
+
+	<bean id="BeanTestMappa" class="com.inglourious.overextension.fixture.bean.BeanProductMock"
+		  over:extension="abstract">
 		<property name="mappa" >
 	      	<map merge="true">
 	      		<entry key="key2">
@@ -22,13 +23,14 @@
       </property>
 	</bean>
 
-<bean id="BeanC" over:extension="abstract" class="com.inglourious.overextension.bean.BeanWithReferenceMockExtParentMock"  >
+	<bean id="BeanC" over:extension="abstract"
+		  class="com.inglourious.overextension.fixture.bean.BeanWithReferenceMockExtParentMock">
 		<property name="a" value="prop A BeanC"/>
 		<property name="b" value="prop B BeanC"/>
 		<property name="mockParent" ref="BeanC_Child" />
 	</bean>
-	
-	<bean id="BeanD" class="com.inglourious.overextension.bean.BeanProductMock" over:extension="abstract" >
+
+	<bean id="BeanD" class="com.inglourious.overextension.fixture.bean.BeanProductMock" over:extension="abstract">
 		<property name="b" value="B figlio"/>
 	</bean>
 	

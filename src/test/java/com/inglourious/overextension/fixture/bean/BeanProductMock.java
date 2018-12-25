@@ -1,4 +1,4 @@
-package com.inglourious.overextension.bean;
+package com.inglourious.overextension.fixture.bean;
 
 import java.util.Map;
 

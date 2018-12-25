@@ -7,17 +7,17 @@
         http://www.inglourious.com/schema/spring/ExtensionSchema
         http://www.inglourious.com/schema/spring/ExtensionSchema.xsd" >
 
-	<bean id="BeanB" class="com.inglourious.overextension.bean.BeanChildrenMock" over:extension="abstract" >
+	<bean id="BeanB" class="com.inglourious.overextension.fixture.bean.BeanChildrenMock" over:extension="abstract">
 		    	<property name="a" value="A figlio"/>
 				<property name="c" value="C figlio"/>
-    </bean>      
+    </bean>
 
-		   
-    <bean id="BeanCProgetto" class="com.inglourious.overextension.bean.BeanWithReferenceMock" >
+
+	<bean id="BeanCProgetto" class="com.inglourious.overextension.fixture.bean.BeanWithReferenceMock">
 			<property name="mock" ref="BeanB" />
-    </bean> 
-	
-    <bean id="BeanD" class="com.inglourious.overextension.bean.BeanProductMock" over:extension="abstract" >
+    </bean>
+
+	<bean id="BeanD" class="com.inglourious.overextension.fixture.bean.BeanProductMock" over:extension="abstract">
 		<property name="c" value="C nipote"/>
 	</bean>
 	 

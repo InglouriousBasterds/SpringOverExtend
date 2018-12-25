@@ -1,6 +1,6 @@
-package com.inglourious.overextension.beanWithAnnotationExtendId;
+package com.inglourious.overextension.fixture.beanWithAnnotationExtendId;
 
-import com.inglourious.overextension.bean.AbstractMainConfigurationTestBean;
+import com.inglourious.overextension.fixture.bean.AbstractMainConfigurationTestBean;
 import org.springframework.stereotype.Component;
 
 /**
