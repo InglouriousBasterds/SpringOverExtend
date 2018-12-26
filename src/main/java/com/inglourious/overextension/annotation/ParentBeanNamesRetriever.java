@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static java.util.Optional.of;
 
 public class ParentBeanNamesRetriever {
@@ -22,7 +23,7 @@ public class ParentBeanNamesRetriever {
 
         Object extendBeanId = getExtendBeanIdAttribute(metadata);
 
-        return isValid(extendBeanId) ? of(asList(extendBeanId.toString())) :
+        return isValid(extendBeanId) ? of(singletonList(extendBeanId.toString())) :
                 getBeanNamesForTypeFor(metadata.getSuperClassName());
     }
 

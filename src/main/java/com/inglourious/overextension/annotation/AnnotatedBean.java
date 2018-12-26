@@ -29,7 +29,6 @@ class AnnotatedBean {
         return Object.class.getCanonicalName().equalsIgnoreCase(superClassName);
     }
 
-
     AnnotationMetadata metadata() {
         return definition.getMetadata();
     }
