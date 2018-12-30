@@ -1,10 +1,25 @@
- [ ![Download](https://api.bintray.com/packages/giskard80/InglouriousBasterds/spring-overextend/images/download.svg) ](https://bintray.com/giskard80/InglouriousBasterds/spring-overextend/_latestVersion) [![CircleCI](https://circleci.com/gh/InglouriousBasterds/SpringOverExtend/tree/master.svg?style=svg)](https://circleci.com/gh/InglouriousBasterds/SpringOverExtend/tree/master)   
+<h1 align="center"> Spring Over Extension </h1>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+[![Download](https://api.bintray.com/packages/giskard80/InglouriousBasterds/spring-overextend/images/download.svg) ](https://bintray.com/giskard80/InglouriousBasterds/spring-overextend/_latestVersion)
+[![CircleCI](https://img.shields.io/appveyor/ci/gruntjs/grunt/master.svg)](https://circleci.com/gh/InglouriousBasterds/SpringOverExtend/tree/master)
+[![GitHub Issues](https://img.shields.io/github/issues/InglouriousBasterds/SpringOverExtend.svg)](https://github.com/InglouriousBasterds/SpringOverExtend/issues)
+![Contributions welcome](https://img.shields.io/badge/contributions-welcome-orange.svg)
 
-# Spring Over Extension
-This library provides an XML namespace handler and an Annotation that allows for overriding, extending or modifying beans in Spring environment. 
-Spring Over Extension is a component for extend an existing bean and inject a custom Spring Bean over.
+## Table of Contents
 
-If you are using Maven, include the dependency into your pom.xml
+- [Basic Overview](#basic-overview)
+- [Configuration](#configuration)
+- [Usage](#usage)
+- [Xml Style](#xml-style)
+- [Annotation Style](#annotation-style)
+
+## Basic Overview
+This library provides an XML namespace handler and an Annotation that enables overriding, extending or modifying beans within the Spring environment.  
+**Spring Over Extension** is a component for extending an existing bean and injecting a custom spring bean over.
+
+## Configuration
+If you are using Maven, in order to being able to use **SpringOverExtension** in the project, we must include the dependency in the pom.xml:
+
 ```
 <dependency>
     <groupId>com.inglourious.overextension</groupId>
@@ -13,11 +28,15 @@ If you are using Maven, include the dependency into your pom.xml
 </dependency>
 ```
 
-The target of this library is to give the chance to extend the spring bean defined in the application context of spring, and override the method or property defined in the original bean.
-This library is tested and works with Spring 5 
+This project is tested and works with Spring 5+.
+
+## Usage
+
+This library offers the possibility to extend the spring bean defined in the Spring's application context and override its methods or properties. 
 
 Concept example for XML configuration:
 Main spring beans file (file master) in a context of a dependency library:
+
 ```
 <bean id="beanA" class="com.inglourious.overextension.fixture.bean.BeanProductMock">
     <property name="a" value="A main value"/>
@@ -26,6 +45,7 @@ Main spring beans file (file master) in a context of a dependency library:
 ```
 
 Project spring file (file slave) in a project that wants to override some method of the parent without change the parent bean id but inhering his properties and functions
+
 ```
 <bean id="beanA" class="com.inglourious.overextension.fixture.bean.BeanChildrenMock"  over:extension="abstract">
     <property name="a" value="A override value"/>
@@ -33,9 +53,7 @@ Project spring file (file slave) in a project that wants to override some method
 </bean>
 ```
 
-
-
-## How To use in Xml Configuration
+## Xml style
 
 Let's assume you have the following configuration in your main project (application-context-main.xml):
 
@@ -83,7 +101,7 @@ Now a submodule can change application's behavior by providing a configuration s
 In this scenario every injection of dataOrderManager would be replaced with new one that extends and inherit the property of the original spring bean.
 
 
-## How To use with Annotation
+## Annotation style
 Extending a spring bean is possible using the annotation @OverExtension and enableing the componentScan of spring
 on package "com.inglourious.overextension". So in your java project you must add:
 
