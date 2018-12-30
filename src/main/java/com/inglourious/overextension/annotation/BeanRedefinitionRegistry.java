@@ -15,20 +15,15 @@ public class BeanRedefinitionRegistry {
 
     public void remappingRegistry(BeansRelationship beansRelationship) {
 
-        // rimuoviamo il bean originale dal registry
         beanDefinitionRegistry.removeBeanDefinition(beansRelationship.parentBeanName());
 
-        //Rendiamo abstract il parent
         ((AbstractBeanDefinition) beansRelationship.parentBeanDefinition()).setAbstract(true);
 
-        // rinominiamo il bean originale secondo la convenzione definita e lo salviamo nel registry
         String newParentName = buildParentName(beansRelationship.parentBeanName());
         beanDefinitionRegistry.registerBeanDefinition(newParentName, beansRelationship.parentBeanDefinition());
 
-        // rimuoviamo il bean originale dal registry
         beanDefinitionRegistry.removeBeanDefinition(beansRelationship.childBeanName());
 
-        //Rendiamo abstract il parent
         beansRelationship.childBeanDefinition().setParentName(newParentName);
 
         beanDefinitionRegistry.registerBeanDefinition(beansRelationship.parentBeanName(), beansRelationship.childBeanDefinition());

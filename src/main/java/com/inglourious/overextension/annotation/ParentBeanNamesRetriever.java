@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static java.util.Optional.empty;
 import static java.util.Optional.of;
 
 public class ParentBeanNamesRetriever {
@@ -41,7 +42,7 @@ public class ParentBeanNamesRetriever {
         try {
             return of(asList(this.configurableListableBeanFactory.getBeanNamesForType(Class.forName(superClassName))));
         } catch (ClassNotFoundException e) {
-            return Optional.empty();
+            return empty();
         }
     }
 }
