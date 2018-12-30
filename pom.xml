@@ -5,7 +5,7 @@
 
 	<groupId>com.inglourious.overextension</groupId>
 	<artifactId>spring-overextend</artifactId>
-	<version>1.1.4</version>
+    <version>1.2.0</version>
 	<packaging>jar</packaging>
 
 	<name>spring-overextend</name>
